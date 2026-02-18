@@ -7,7 +7,9 @@ module.exports = {
     background: './src/background.js',
     popup: './src/popup.js',
     options: './src/options.js',
+    dashboard: './src/dashboard.js',
   },
+
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
@@ -19,7 +21,9 @@ module.exports = {
         { from: 'src/manifest.json', to: '.' },
         { from: 'src/popup.html', to: '.' },
         { from: 'src/options.html', to: '.' },
-        { from: 'src/icon.png', to: '.', noErrorOnMissing: true }, 
+        { from: 'src/dashboard.html', to: '.', noErrorOnMissing: true },
+        { from: 'src/icon.png', to: '.', noErrorOnMissing: true },
+
       ],
     }),
   ],

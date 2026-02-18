@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cloud Command Center – Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --surface2: #21262d;
+            --border: #30363d;
+            --text: #e6edf3;
+            --muted: #8b949e;
+            --aws: #FF9900;
+            --azure: #0078D4;
+            --gcp: #4285F4;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* ── Sidebar ── */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+        }
+
+        .sidebar-logo {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-logo span {
+            font-size: 22px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--muted);
+            transition: all 0.15s;
+            text-decoration: none;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: var(--surface2);
+            color: var(--text);
+        }
+
+        .nav-section {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 16px 12px 6px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* ── Main Content ── */
+        .main {
+            margin-left: 220px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .topbar-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badge {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .btn {
+            background: #238636;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 7px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn:hover {
+            background: #2ea043;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 6px;
+            padding: 7px 16px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-outline:hover {
+            background: var(--surface2);
+        }
+
+        /* ── Content Area ── */
+        .content {
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* ── KPI Cards ── */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .kpi-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .kpi-card.green::before {
+            background: var(--green);
+        }
+
+        .kpi-card.red::before {
+            background: var(--red);
+        }
+
+        .kpi-card.yellow::before {
+            background: var(--yellow);
+        }
+
+        .kpi-card.blue::before {
+            background: #58a6ff;
+        }
+
+        .kpi-card.purple::before {
+            background: var(--purple);
+        }
+
+        .kpi-card.aws-card::before {
+            background: var(--aws);
+        }
+
+        .kpi-card.azure-card::before {
+            background: var(--azure);
+        }
+
+        .kpi-card.gcp-card::before {
+            background: var(--gcp);
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .kpi-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .kpi-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .kpi-trend {
+            font-size: 12px;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .kpi-trend.up {
+            color: var(--red);
+        }
+
+        .kpi-trend.down {
+            color: var(--green);
+        }
+
+        .kpi-icon {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 22px;
+            opacity: 0.5;
+        }
+
+        /* ── Charts Grid ── */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+        }
+
+        .charts-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .chart-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .chart-card h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .chart-card .chart-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+
+        .chart-wrap {
+            position: relative;
+            height: 220px;
+        }
+
+        .chart-wrap-sm {
+            position: relative;
+            height: 180px;
+        }
+
+        /* ── Provider Cards ── */
+        .provider-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .provider-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .provider-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .provider-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .provider-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .provider-status {
+            margin-left: auto;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .status-ok {
+            background: rgba(63, 185, 80, 0.15);
+            color: var(--green);
+        }
+
+        .status-warn {
+            background: rgba(210, 153, 34, 0.15);
+            color: var(--yellow);
+        }
+
+        .status-err {
+            background: rgba(248, 81, 73, 0.15);
+            color: var(--red);
+        }
+
+        .status-nc {
+            background: rgba(139, 148, 158, 0.15);
+            color: var(--muted);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-row .label {
+            color: var(--muted);
+        }
+
+        .stat-row .value {
+            font-weight: 600;
+        }
+
+        /* ── Alerts Panel ── */
+        .alerts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            border: 1px solid;
+        }
+
+        .alert-item.warn {
+            background: rgba(210, 153, 34, 0.08);
+            border-color: rgba(210, 153, 34, 0.3);
+        }
+
+        .alert-item.danger {
+            background: rgba(248, 81, 73, 0.08);
+            border-color: rgba(248, 81, 73, 0.3);
+        }
+
+        .alert-item.info {
+            background: rgba(88, 166, 255, 0.08);
+            border-color: rgba(88, 166, 255, 0.3);
+        }
+
+        .alert-icon {
+            font-size: 16px;
+            margin-top: 1px;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .alert-desc {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .no-alerts {
+            color: var(--muted);
+            font-size: 13px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* ── Services Table ── */
+        .services-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .services-table th {
+            text-align: left;
+            padding: 8px 12px;
+            color: var(--muted);
+            font-weight: 500;
+            font-size: 11px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .services-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .services-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .bar-bg {
+            background: var(--surface2);
+            border-radius: 4px;
+            height: 6px;
+            flex: 1;
+        }
+
+        .bar-fill {
+            height: 6px;
+            border-radius: 4px;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ── Budget Gauge ── */
+        .gauge-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .gauge-label {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* ── Spinner ── */
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--border);
+            border-top-color: var(--green);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── Section Header ── */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .section-header h2 {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .section-header span {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 1100px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .provider-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .charts-grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .provider-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo"><span>☁️</span> CloudSight</div>
+
+            <div class="nav-section">Overview</div>
+            <a class="nav-item active" href="dashboard.html">📊 Dashboard</a>
+            <a class="nav-item" href="#" id="nav-refresh">🔄 Force Refresh</a>
+
+            <div class="nav-section">Providers</div>
+            <a class="nav-item" href="#aws-section">🟠 AWS</a>
+            <a class="nav-item" href="#azure-section">🔵 Azure</a>
+            <a class="nav-item" href="#gcp-section">🔷 GCP</a>
+
+            <div class="nav-section">Alerts</div>
+            <a class="nav-item" href="#alerts-section">🔔 Alerts <span id="alert-badge"
+                    style="margin-left:auto;background:var(--red);color:#fff;border-radius:20px;padding:1px 7px;font-size:11px;display:none;">0</span></a>
+
+            <div class="sidebar-bottom">
+                <a class="nav-item" href="options.html">⚙️ Settings</a>
+                <div class="nav-item" style="font-size:11px;color:var(--muted);">Last sync: <span
+                        id="sidebar-sync">–</span></div>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <div class="main">
+            <div class="topbar">
+                <div class="topbar-title">Cloud Cost Dashboard</div>
+                <div class="topbar-right">
+                    <div class="badge" id="currency-badge">USD</div>
+                    <div class="badge" id="sync-badge">⏳ Loading…</div>
+                    <button class="btn-outline" id="open-options">⚙ Settings</button>
+                    <button class="btn" id="refresh-btn">↻ Refresh</button>
+                </div>
+            </div>
+
+            <div class="content">
+
+                <!-- KPI Row -->
+                <div>
+                    <div class="section-header">
+                        <h2>Key Metrics</h2>
+                        <span id="kpi-updated">–</span>
+                    </div>
+                    <div class="kpi-grid">
+                        <div class="kpi-card blue">
+                            <div class="kpi-icon">💰</div>
+                            <div class="kpi-label">Total Spend (MTD)</div>
+                            <div class="kpi-value" id="kpi-total">–</div>
+                            <div class="kpi-sub">Month-to-date across all clouds</div>
+                        </div>
+                        <div class="kpi-card purple">
+                            <div class="kpi-icon">📈</div>
+                            <div class="kpi-label">Predicted EOM Bill</div>
+                            <div class="kpi-value" id="kpi-forecast">–</div>
+                            <div class="kpi-sub">End-of-month estimate</div>
+                        </div>
+                        <div class="kpi-card" id="kpi-budget-card">
+                            <div class="kpi-icon">🎯</div>
+                            <div class="kpi-label">Budget Used</div>
+                            <div class="kpi-value" id="kpi-budget-pct">–</div>
+                            <div class="kpi-sub" id="kpi-budget-sub">of $1,000 limit</div>
+                        </div>
+                        <div class="kpi-card yellow">
+                            <div class="kpi-icon">🔔</div>
+                            <div class="kpi-label">Active Alerts</div>
+                            <div class="kpi-value" id="kpi-alerts">0</div>
+                            <div class="kpi-sub" id="kpi-alert-sub">No issues detected</div>
+                        </div>
+                        <div class="kpi-card aws-card">
+                            <div class="kpi-icon">🟠</div>
+                            <div class="kpi-label">AWS Spend</div>
+                            <div class="kpi-value" id="kpi-aws">–</div>
+                            <div class="kpi-sub" id="kpi-aws-sub">–</div>
+                        </div>
+                        <div class="kpi-card azure-card">
+                            <div class="kpi-icon">🔵</div>
+                            <div class="kpi-label">Azure Spend</div>
+                            <div class="kpi-value" id="kpi-azure">–</div>
+                            <div class="kpi-sub" id="kpi-azure-sub">–</div>
+                        </div>
+                        <div class="kpi-card gcp-card">
+                            <div class="kpi-icon">🔷</div>
+                            <div class="kpi-label">GCP Spend</div>
+                            <div class="kpi-value" id="kpi-gcp">–</div>
+                            <div class="kpi-sub" id="kpi-gcp-sub">–</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row 1: Trend + Donut -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>14-Day Cost Trend</h3>
+                        <div class="chart-sub">Daily spend across all providers (USD base)</div>
+                        <div class="chart-wrap">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Spend by Provider</h3>
+                        <div class="chart-sub">Current month distribution</div>
+                        <div class="chart-wrap">
+                            <canvas id="donutChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row 2: Bar + Gauge + Forecast -->
+                <div class="charts-grid-3">
+                    <div class="chart-card">
+                        <h3>Top Services (AWS)</h3>
+                        <div class="chart-sub">Highest cost services this month</div>
+                        <div class="chart-wrap-sm">
+                            <canvas id="servicesChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Budget Gauge</h3>
+                        <div class="chart-sub">Global spend vs $1,000 limit</div>
+                        <div class="chart-wrap-sm">
+                            <canvas id="gaugeChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Forecast vs Actual</h3>
+                        <div class="chart-sub">Projected end-of-month vs current</div>
+                        <div class="chart-wrap-sm">
+                            <canvas id="forecastChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alerts Section -->
+                <div id="alerts-section">
+                    <div class="section-header">
+                        <h2>🔔 Alerts & Anomalies</h2>
+                        <span id="alerts-count-label">–</span>
+                    </div>
+                    <div class="alerts-list" id="alerts-list">
+                        <div class="no-alerts">Loading alerts…</div>
+                    </div>
+                </div>
+
+                <!-- Provider Detail Cards -->
+                <div id="aws-section">
+                    <div class="section-header">
+                        <h2>Provider Details</h2>
+                    </div>
+                    <div class="provider-grid">
+                        <!-- AWS -->
+                        <div class="provider-card">
+                            <div class="provider-header">
+                                <div class="provider-dot" style="background:var(--aws)"></div>
+                                <div class="provider-name">Amazon Web Services</div>
+                                <div class="provider-status" id="aws-status">–</div>
+                            </div>
+                            <div class="stat-row"><span class="label">MTD Spend</span><span class="value"
+                                    id="aws-mtd">–</span></div>
+                            <div class="stat-row"><span class="label">Forecast (EOM)</span><span class="value"
+                                    id="aws-forecast">–</span></div>
+                            <div class="stat-row"><span class="label">Top Service</span><span class="value"
+                                    id="aws-top">–</span></div>
+                            <div class="stat-row"><span class="label">Anomaly</span><span class="value"
+                                    id="aws-anomaly">–</span></div>
+                        </div>
+                        <!-- Azure -->
+                        <div class="provider-card" id="azure-section">
+                            <div class="provider-header">
+                                <div class="provider-dot" style="background:var(--azure)"></div>
+                                <div class="provider-name">Microsoft Azure</div>
+                                <div class="provider-status" id="azure-status">–</div>
+                            </div>
+                            <div class="stat-row"><span class="label">MTD Spend</span><span class="value"
+                                    id="azure-mtd">–</span></div>
+                            <div class="stat-row"><span class="label">Forecast (EOM)</span><span class="value"
+                                    id="azure-forecast">–</span></div>
+                            <div class="stat-row"><span class="label">Top Service</span><span class="value"
+                                    id="azure-top">–</span></div>
+                        </div>
+                        <!-- GCP -->
+                        <div class="provider-card" id="gcp-section">
+                            <div class="provider-header">
+                                <div class="provider-dot" style="background:var(--gcp)"></div>
+                                <div class="provider-name">Google Cloud Platform</div>
+                                <div class="provider-status" id="gcp-status">–</div>
+                            </div>
+                            <div class="stat-row"><span class="label">MTD Spend</span><span class="value"
+                                    id="gcp-mtd">–</span></div>
+                            <div class="stat-row"><span class="label">Forecast (EOM)</span><span class="value"
+                                    id="gcp-forecast">–</span></div>
+                            <div class="stat-row"><span class="label">Note</span><span class="value"
+                                    style="color:var(--muted);font-size:11px;">BigQuery for full data</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services Breakdown Table -->
+                <div class="chart-card">
+                    <div class="section-header">
+                        <h2>AWS Service Breakdown</h2>
+                        <span>Top 5 by cost</span>
+                    </div>
+                    <table class="services-table">
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Cost</th>
+                                <th style="width:40%">Share</th>
+                            </tr>
+                        </thead>
+                        <tbody id="services-tbody">
+                            <tr>
+                                <td colspan="3" style="color:var(--muted);text-align:center;padding:20px;">Loading…</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div><!-- /content -->
+        </div><!-- /main -->
+    </div><!-- /layout -->
+
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

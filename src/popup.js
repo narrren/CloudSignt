@@ -1,88 +1,106 @@
 import Chart from 'chart.js/auto';
 
+const CURRENCY_SYMBOLS = { USD: '$', EUR: '€', GBP: '£', INR: '₹', JPY: '¥' };
+const BUDGET_LIMIT_USD = 1000;
+
 document.addEventListener('DOMContentLoaded', () => {
-    chrome.storage.local.get(['dashboardData', 'lastUpdated'], (result) => {
+    // Buttons
+    document.getElementById('open-dashboard').addEventListener('click', () => {
+        chrome.tabs.create({ url: chrome.runtime.getURL('dashboard.html') });
+    });
+    document.getElementById('open-options').addEventListener('click', () => {
+        chrome.runtime.openOptionsPage();
+    });
+
+    chrome.storage.local.get(['dashboardData'], (result) => {
         const data = result.dashboardData;
+
         if (!data) {
-            const costEl = document.getElementById('total-cost');
-            costEl.innerText = "Setup Required";
-            costEl.style.fontSize = "20px";
-            costEl.style.cursor = "pointer";
-            costEl.style.color = "#3498db";
-            costEl.title = "Click to Open Settings";
-            costEl.onclick = () => chrome.runtime.openOptionsPage();
+            document.getElementById('total-cost').innerText = 'Setup Required';
+            document.getElementById('total-cost').style.cursor = 'pointer';
+            document.getElementById('total-cost').onclick = () => chrome.runtime.openOptionsPage();
+            const banner = document.getElementById('alert-banner');
+            banner.className = 'alert-banner warn';
+            document.getElementById('alert-text').innerText = 'Click Settings to add cloud credentials';
             return;
         }
 
-        // 1. Text Updates
-        // Use stored currency and rate
         const currency = data.currency || 'USD';
         const rate = data.rate || 1.0;
-        const convert = (val) => val * rate;
+        const sym = CURRENCY_SYMBOLS[currency] || currency + ' ';
+        const f = (v) => `${sym}${(v).toFixed(2)}`;
+        const fRaw = (v) => `${sym}${(v * rate).toFixed(2)}`;
+        const budgetLimit = BUDGET_LIMIT_USD * rate;
 
-        // Total Cost (already converted in background.js, or we convert here if not)
-        // Background sets data.totalGlobal = convert(...)
-        document.getElementById('total-cost').innerText = `${currency} ${data.totalGlobal.toFixed(2)}`;
+        // Sync time
+        document.getElementById('sync-time').innerText = data.lastUpdated
+            ? `Synced ${new Date(data.lastUpdated).toLocaleTimeString()}`
+            : 'Never synced';
 
-        // Calculate Total Forecast
-        // Note: Forecasts are raw numbers from APIs (USD or native), need manual conversion here.
-        const awsForecast = data.aws ? parseFloat(data.aws.forecast) : 0;
-        const azureForecast = data.azure ? parseFloat(data.azure.forecast) : 0;
-        const gcpForecast = data.gcp ? parseFloat(data.gcp.forecast) : 0;
+        // Hero
+        document.getElementById('total-cost').innerText = f(data.totalGlobal);
 
-        const totalForecast = convert(awsForecast + azureForecast + gcpForecast);
-        document.getElementById('forecast-cost').innerText = `${currency} ${totalForecast.toFixed(2)}`;
+        const awsForecast = parseFloat(data.aws?.forecast || 0);
+        const azureForecast = parseFloat(data.azure?.forecast || 0);
+        const gcpForecast = parseFloat(data.gcp?.forecast || 0);
+        const totalForecast = (awsForecast + azureForecast + gcpForecast) * rate;
+        document.getElementById('forecast-cost').innerText = f(totalForecast);
 
-        document.getElementById('last-sync').innerText = data.lastUpdated
-            ? new Date(data.lastUpdated).toLocaleTimeString()
-            : "Never";
+        // Budget
+        const budgetPct = (data.totalGlobal / budgetLimit) * 100;
+        const budgetEl = document.getElementById('budget-pct');
+        budgetEl.innerText = `${budgetPct.toFixed(1)}%`;
+        budgetEl.style.color = budgetPct >= 100 ? 'var(--red)' : budgetPct >= 80 ? 'var(--yellow)' : 'var(--green)';
 
-        // 2. Chart: Provider Breakdown
-        const ctx = document.getElementById('serviceChart').getContext('2d');
+        // Alerts
+        let alertCount = 0;
+        let alertMsg = 'All systems normal';
+        let alertType = 'ok';
+        if (data.aws?.anomaly?.isAnomaly) { alertCount++; alertMsg = `AWS Spike: ${fRaw(data.aws.anomaly.today)}`; alertType = 'danger'; }
+        if (budgetPct >= 100) { alertCount++; alertMsg = `Budget exceeded! ${budgetPct.toFixed(0)}% used`; alertType = 'danger'; }
+        else if (budgetPct >= 80) { alertCount++; alertMsg = `Budget warning: ${budgetPct.toFixed(0)}% used`; alertType = 'warn'; }
 
-        // Check which providers are active
-        const labels = [];
-        const values = [];
-        const colors = [];
+        document.getElementById('alert-count').innerText = alertCount;
+        document.getElementById('alert-text').innerText = alertMsg;
+        const banner = document.getElementById('alert-banner');
+        banner.className = `alert-banner ${alertType}`;
+        banner.querySelector('span').innerText = alertType === 'ok' ? '✅' : alertType === 'warn' ? '⚠️' : '🚨';
 
-        // Values for chart should be in user currency
-        if (data.aws && data.aws.totalCost > 0) {
-            labels.push('AWS');
-            values.push(convert(data.aws.totalCost));
-            colors.push('#FF9900');
-        }
-        if (data.azure && data.azure.totalCost > 0) {
-            labels.push('Azure');
-            values.push(convert(data.azure.totalCost));
-            colors.push('#0078D4');
-        }
-        if (data.gcp && data.gcp.totalCost > 0) {
-            labels.push('GCP');
-            values.push(convert(data.gcp.totalCost));
-            colors.push('#4285F4');
-        }
+        // Provider pills
+        document.getElementById('aws-cost').innerText = fRaw(data.aws?.totalCost || 0);
+        document.getElementById('azure-cost').innerText = fRaw(data.azure?.totalCost || 0);
+        document.getElementById('gcp-cost').innerText = fRaw(data.gcp?.totalCost || 0);
 
-        // If no cost, show empty state
-        if (labels.length === 0) {
-            labels.push('No Cost Data');
-            values.push(1);
-            colors.push('#E0E0E0');
-        }
+        // Chart
+        const labels = [], values = [], colors = [];
+        if ((data.aws?.totalCost || 0) > 0) { labels.push('AWS'); values.push((data.aws.totalCost) * rate); colors.push('#FF9900'); }
+        if ((data.azure?.totalCost || 0) > 0) { labels.push('Azure'); values.push((data.azure.totalCost) * rate); colors.push('#0078D4'); }
+        if ((data.gcp?.totalCost || 0) > 0) { labels.push('GCP'); values.push((data.gcp.totalCost) * rate); colors.push('#4285F4'); }
+        if (values.length === 0) { labels.push('No Data'); values.push(1); colors.push('#30363d'); }
 
-        new Chart(ctx, {
+        new Chart(document.getElementById('serviceChart'), {
             type: 'doughnut',
             data: {
-                labels: labels,
+                labels,
                 datasets: [{
                     data: values,
-                    backgroundColor: colors
+                    backgroundColor: colors,
+                    borderWidth: 2,
+                    borderColor: '#161b22'
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
                 plugins: {
-                    legend: { position: 'bottom' },
-                    title: { display: true, text: 'Spend by Provider' }
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#8b949e', font: { size: 11 }, padding: 10 }
+                    },
+                    tooltip: {
+                        callbacks: { label: ctx => ` ${sym}${ctx.parsed.toFixed(2)}` }
+                    }
                 }
             }
         });

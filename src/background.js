@@ -143,14 +143,22 @@ async function fetchAWS(creds) {
 
     const anomaly = detectAnomaly(historyResponse);
 
+    // Process History for Charting
+    const history = historyResponse.ResultsByTime.map(r => ({
+        date: r.TimePeriod.Start,
+        cost: parseFloat(r.Total.UnblendedCost.Amount)
+    }));
+
     return {
         provider: 'AWS',
         totalCost: calculateTotal(costResponse),
         services: processServices(costResponse),
         forecast: forecastResponse.Total.Amount,
         unit: forecastResponse.Total.Unit,
-        anomaly: anomaly
+        anomaly: anomaly,
+        history: history
     };
+
 }
 
 async function fetchAWSHistory(client) {

@@ -45,24 +45,22 @@ export async function encryptData(data) {
 }
 
 export async function decryptData(cipherText) {
-    if (!cipherText || !cipherText.includes(':')) return null;
-
-    try {
-        const key = await getOrCreateKey();
-        const [ivStr, dataStr] = cipherText.split(':');
-
-        const iv = new Uint8Array(atob(ivStr).split('').map(c => c.charCodeAt(0)));
-        const data = new Uint8Array(atob(dataStr).split('').map(c => c.charCodeAt(0)));
-
-        const decrypted = await crypto.subtle.decrypt(
-            { name: 'AES-GCM', iv: iv },
-            key,
-            data
-        );
-
-        return JSON.parse(new TextDecoder().decode(decrypted));
-    } catch (e) {
-        console.error("Decryption failed", e);
-        return null;
+    if (!cipherText || !cipherText.includes(':')) {
+        throw new Error('Invalid cipher text format');
     }
+
+    const key = await getOrCreateKey();
+    const [ivStr, dataStr] = cipherText.split(':');
+
+    const iv = new Uint8Array(atob(ivStr).split('').map(c => c.charCodeAt(0)));
+    const data = new Uint8Array(atob(dataStr).split('').map(c => c.charCodeAt(0)));
+
+    // This will throw a DOMException if the key is wrong or data is corrupt
+    const decrypted = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: iv },
+        key,
+        data
+    );
+
+    return JSON.parse(new TextDecoder().decode(decrypted));
 }

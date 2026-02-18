@@ -36,21 +36,51 @@ const RATES = {
 async function fetchAllData() {
     const result = await chrome.storage.local.get(["cloudCreds", "encryptedCreds", "currency"]);
 
-    let creds = result.cloudCreds;
+    // cloudCreds may be stored as null (not undefined) when encryption is enabled
+    let creds = result.cloudCreds || null;
     const currency = result.currency || 'USD';
     const rate = RATES[currency] || 1.0;
 
-    // Handle Encryption
+    // Handle Encrypted credentials
     if (!creds && result.encryptedCreds) {
         try {
             creds = await decryptData(result.encryptedCreds);
         } catch (e) {
             console.error("Decryption failed in background", e);
+            // Surface a clear error to the dashboard instead of silently failing
+            chrome.storage.local.set({
+                dashboardData: {
+                    decryptionError: true,
+                    errorMessage: 'Credential decryption failed. Please re-save your credentials in Settings.',
+                    lastUpdated: new Date().toISOString(),
+                    currency,
+                    rate,
+                    totalGlobal: 0,
+                    aws: { totalCost: 0, error: true },
+                    azure: { totalCost: 0, error: true },
+                    gcp: { totalCost: 0, error: true }
+                }
+            });
             return;
         }
     }
 
-    if (!creds) creds = {};
+    // If still no creds after decryption attempt, nothing is configured
+    if (!creds || (!creds.aws?.key && !creds.azure?.client && !creds.gcp?.json)) {
+        chrome.storage.local.set({
+            dashboardData: {
+                notConfigured: true,
+                lastUpdated: new Date().toISOString(),
+                currency,
+                rate,
+                totalGlobal: 0,
+                aws: { totalCost: 0, error: true },
+                azure: { totalCost: 0, error: true },
+                gcp: { totalCost: 0, error: true }
+            }
+        });
+        return;
+    }
 
 
     // use Promise.allSettled to allow partial failures

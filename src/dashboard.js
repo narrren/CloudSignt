@@ -61,6 +61,40 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    // ── Decryption Error State ───────────────────────────────────────────────────
+    if (data.decryptionError) {
+        setEl('sync-badge', '⚠ Decryption Error');
+        document.getElementById('kpi-total').innerText = 'Error';
+        document.getElementById('alerts-list').innerHTML = `
+      <div class="alert-item danger">
+        <div class="alert-icon">🔐</div>
+        <div>
+          <div class="alert-title">Credential Decryption Failed</div>
+          <div class="alert-desc">${data.errorMessage || 'Please re-open Settings and re-save your credentials.'}</div>
+        </div>
+      </div>`;
+        setEl('kpi-alerts', '1');
+        setEl('kpi-alert-sub', 'Decryption error');
+        return;
+    }
+
+    // ── Not Configured State ─────────────────────────────────────────────────────
+    if (data.notConfigured) {
+        setEl('sync-badge', '⚠ Not Configured');
+        document.getElementById('kpi-total').innerText = 'Setup Required';
+        document.getElementById('kpi-total').style.cursor = 'pointer';
+        document.getElementById('kpi-total').onclick = () => chrome.runtime.openOptionsPage();
+        document.getElementById('alerts-list').innerHTML = `
+      <div class="alert-item info">
+        <div class="alert-icon">ℹ️</div>
+        <div>
+          <div class="alert-title">No cloud credentials configured</div>
+          <div class="alert-desc">Click Settings to add your AWS, Azure, or GCP credentials.</div>
+        </div>
+      </div>`;
+        return;
+    }
+
     const currency = data.currency || 'USD';
     const rate = data.rate || 1.0;
     const budgetLimit = BUDGET_LIMIT_USD * rate;
@@ -116,7 +150,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     else if (budgetPct >= 80) alerts.push({ type: 'warn', icon: '⚠️', title: 'Budget Warning', desc: `${budgetPct.toFixed(1)}% of budget used. Approaching limit.` });
     if (data.aws?.anomaly?.isAnomaly) alerts.push({ type: 'danger', icon: '📈', title: 'AWS Cost Spike', desc: `Yesterday's spend (${fRaw(data.aws.anomaly.today)}) was >3× the 14-day average (${fRaw(data.aws.anomaly.average)}).` });
     if (totalForecast > budgetLimit * 1.1) alerts.push({ type: 'warn', icon: '🔮', title: 'Forecast Exceeds Budget', desc: `Predicted EOM bill of ${f(totalForecast)} exceeds your limit.` });
-    if (data.aws?.error && data.azure?.error && data.gcp?.error) alerts.push({ type: 'info', icon: 'ℹ️', title: 'No Providers Connected', desc: 'Open Settings to add your cloud credentials.' });
+    // Only show "No Providers Connected" if ALL providers have errors AND total is 0
+    // (i.e. not just Azure/GCP being unconfigured while AWS is working)
+    if (data.aws?.error && data.azure?.error && data.gcp?.error && data.totalGlobal === 0) {
+        alerts.push({ type: 'warn', icon: '⚠️', title: 'No Cost Data Available', desc: 'AWS fetch may have failed. Check your credentials in Settings or wait for the next refresh.' });
+    }
 
     setEl('kpi-alerts', alerts.length);
     setEl('kpi-alert-sub', alerts.length === 0 ? 'All systems normal' : `${alerts.length} issue${alerts.length > 1 ? 's' : ''} detected`);

@@ -1,0 +1,26 @@
+{
+    "manifest_version": 3,
+    "name": "Cloud Command Center",
+    "version": "1.0",
+    "permissions": [
+        "storage",
+        "alarms",
+        "notifications"
+    ],
+    "host_permissions": [
+        "https://*.amazonaws.com/*",
+        "https://management.azure.com/*",
+        "https://cloudbilling.googleapis.com/*"
+    ],
+    "options_ui": {
+        "page": "options.html",
+        "open_in_tab": false
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "Cloud Dashboard"
+    },
+    "background": {
+        "service_worker": "background.js"
+    }
+}

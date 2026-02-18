@@ -1,0 +1,30 @@
+{
+  "name": "cloudsight",
+  "version": "1.0.0",
+  "description": "CloudSight project repository.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/narrren/CloudSignt.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/narrren/CloudSignt/issues"
+  },
+  "homepage": "https://github.com/narrren/CloudSignt#readme",
+  "dependencies": {
+    "@aws-sdk/client-cost-explorer": "^3.992.0",
+    "chart.js": "^4.5.1"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^13.0.1",
+    "webpack": "^5.105.2",
+    "webpack-cli": "^6.0.1"
+  }
+}

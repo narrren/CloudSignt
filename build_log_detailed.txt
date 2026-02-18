@@ -1,0 +1,93 @@
+PublicPath: [1mauto[39m[22m
+assets by status 3.51 KiB [1m[32m[cached][39m[22m 6 assets
+Entrypoint [1mbackground[39m[22m = [1m[32mbackground.js[39m[22m
+Entrypoint [1mpopup[39m[22m = [1m[32mpopup.js[39m[22m
+Entrypoint [1moptions[39m[22m = [1m[32moptions.js[39m[22m 1 auxiliary asset
+chunk {[1m[33m471[39m[22m} (runtime: background) [1m[32mbackground.js[39m[22m (background) 3.86 KiB [1m[33m[entry][39m[22m [1m[32m[rendered][39m[22m
+  > ./src/background.js [1m[39m[22m background
+chunk {[1m[33m575[39m[22m} (runtime: options) [1m[32moptions.js[39m[22m (options) 523 bytes [1m[33m[entry][39m[22m [1m[32m[rendered][39m[22m
+  > ./src/options.js [1m[39m[22m options
+chunk {[1m[33m887[39m[22m} (runtime: popup) [1m[32mpopup.js[39m[22m (popup) 1.55 KiB [1m[33m[entry][39m[22m [1m[32m[rendered][39m[22m
+  > ./src/popup.js [1m[39m[22m popup
+[1m./src/background.js[39m[22m [371] 3.86 KiB {[1m[33m471[39m[22m} [depth 0] [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m [1m[31m[1 error][39m[22m
+  [1m[36m[no exports used][39m[22m
+  [1m[33mModuleConcatenation bailout: Module is not an ECMAScript module[39m[22m
+[1m./src/popup.js[39m[22m [541] 1.55 KiB {[1m[33m887[39m[22m} [depth 0] [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m [1m[31m[1 error][39m[22m
+  [1m[36m[no exports used][39m[22m
+  [1m[33mModuleConcatenation bailout: Module is not an ECMAScript module[39m[22m
+[1m./src/options.js[39m[22m [737] 523 bytes {[1m[33m575[39m[22m} [depth 0] [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+  [1m[36m[no exports used][39m[22m
+  [1m[33mStatement (ExpressionStatement) with side effects in source code at 1:0-12:3[39m[22m
+  [1m[33mModuleConcatenation bailout: Module is not an ECMAScript module[39m[22m
+
+[1mLOG from webpack.Compilation[39m[22m
+    [1m3 modules hashed, 0 from cache (1 variants per module in average)[39m[22m
+    [1m100% code generated (3 generated, 0 from cache)[39m[22m
++ 24 hidden lines
+
+[1mLOG from webpack.FlagDependencyExportsPlugin[39m[22m
+    [1m0% of exports of modules have been determined (3 no declared exports, 0 not cached, 0 flagged uncacheable, 0 from cache, 0 from mem cache, 0 additional calculations due to dependencies)[39m[22m
++ 3 hidden lines
+
+[1mLOG from webpack.buildChunkGraph[39m[22m
+    [1m6 queue items processed (3 blocks)[39m[22m
+    [1m0 chunk groups connected[39m[22m
+    [1m0 chunk groups processed for merging (0 module sets, 0 forked, 0 + 0 modules forked, 0 + 0 modules merged into fork, 0 resulting modules)[39m[22m
+    [1m0 chunk group info updated (0 already connected chunk groups reconnected)[39m[22m
++ 5 hidden lines
+
+[1mLOG from copy-webpack-plugin[39m[22m
+    [1mstarting to add additional assets...[39m[22m
+    [1mstarting to process a pattern from 'src/manifest.json' using 'C:\Users\naren\Desktop\CloudSight' context[39m[22m
+    [1mstarting to process a pattern from 'src/popup.html' using 'C:\Users\naren\Desktop\CloudSight' context[39m[22m
+    [1mbegin globbing 'C:/Users/naren/Desktop/CloudSight/src/manifest.json'...[39m[22m
+    [1mbegin globbing 'C:/Users/naren/Desktop/CloudSight/src/popup.html'...[39m[22m
+    [1m'to' option '.' determinated as 'dir'[39m[22m
+    [1mdetermined that 'C:\Users\naren\Desktop\CloudSight\src\manifest.json' should write to 'manifest.json'[39m[22m
+    [1m'to' option '.' determinated as 'dir'[39m[22m
+    [1mdetermined that 'C:\Users\naren\Desktop\CloudSight\src\popup.html' should write to 'popup.html'[39m[22m
+    [1mfinished to process a pattern from 'src/manifest.json' using 'C:\Users\naren\Desktop\CloudSight\src' context[39m[22m
+    [1mstarting to process a pattern from 'src/options.html' using 'C:\Users\naren\Desktop\CloudSight' context[39m[22m
+    [1mfinished to process a pattern from 'src/popup.html' using 'C:\Users\naren\Desktop\CloudSight\src' context[39m[22m
+    [1mstarting to process a pattern from 'src/icon.png' using 'C:\Users\naren\Desktop\CloudSight' context[39m[22m
+    [1mbegin globbing 'C:/Users/naren/Desktop/CloudSight/src/options.html'...[39m[22m
+    [1mbegin globbing 'C:/Users/naren/Desktop/CloudSight/src/icon.png'...[39m[22m
+    [1m'to' option '.' determinated as 'dir'[39m[22m
+    [1mdetermined that 'C:\Users\naren\Desktop\CloudSight\src\options.html' should write to 'options.html'[39m[22m
+    [1mfinished to process a pattern from 'src/icon.png' using 'C:\Users\naren\Desktop\CloudSight' context to '.'[39m[22m
+    [1mfinished to process a pattern from 'src/options.html' using 'C:\Users\naren\Desktop\CloudSight\src' context[39m[22m
+    [1mwriting 'manifest.json' from 'C:\Users\naren\Desktop\CloudSight\src\manifest.json' to compilation assets...[39m[22m
+    [1mwritten 'manifest.json' from 'C:\Users\naren\Desktop\CloudSight\src\manifest.json' to compilation assets[39m[22m
+    [1mwriting 'popup.html' from 'C:\Users\naren\Desktop\CloudSight\src\popup.html' to compilation assets...[39m[22m
+    [1mwritten 'popup.html' from 'C:\Users\naren\Desktop\CloudSight\src\popup.html' to compilation assets[39m[22m
+    [1mwriting 'options.html' from 'C:\Users\naren\Desktop\CloudSight\src\options.html' to compilation assets...[39m[22m
+    [1mwritten 'options.html' from 'C:\Users\naren\Desktop\CloudSight\src\options.html' to compilation assets[39m[22m
+    [1mfinished to adding additional assets[39m[22m
++ 39 hidden lines
+
+[1mLOG from webpack.FileSystemInfo[39m[22m
+    [1m4 new snapshots created[39m[22m
+    [1m0% root snapshot uncached (0 / 0)[39m[22m
+    [1m0% children snapshot uncached (0 / 0)[39m[22m
+    [1m0 entries tested[39m[22m
+    [1mFile info in cache: 4 timestamps 1 hashes 1 timestamp hash combinations[39m[22m
+    [1mFile timestamp snapshot optimization: 0% (0/3) entries shared via 0 shared snapshots (0 times referenced)[39m[22m
+    [1mFile timestamp hash combination snapshot optimization: 0% (0/1) entries shared via 0 shared snapshots (0 times referenced)[39m[22m
+    [1mDirectory info in cache: 0 timestamps 0 hashes 0 timestamp hash combinations[39m[22m
+    [1mManaged items info in cache: 0 items[39m[22m
+
+[1m[31mERROR[39m[22m in [1m./src/background.js[39m[22m [1m[32m1:0[39m[22m
+[1mModule parse [1m[31mfailed[39m[22m[1m: 'import' and 'export' may appear only with 'sourceType: module' (1:0)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+> import { CostExplorerClient, GetCostAndUsageCommand, GetCostForecastCommand }
+|     from "@aws-sdk/client-cost-explorer";
+| [39m[22m
+
+[1m[31mERROR[39m[22m in [1m./src/popup.js[39m[22m [1m[32m1:0[39m[22m
+[1mModule parse [1m[31mfailed[39m[22m[1m: 'import' and 'export' may appear only with 'sourceType: module' (1:0)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+> import Chart from 'chart.js/auto';
+| 
+| document.addEventListener('DOMContentLoaded', () => {[39m[22m
+
+2026-02-18 [1m22:10:15[39m[22m: webpack 5.105.2 compiled with [1m[31m2 errors[39m[22m in 328 ms (8d6a37549edd57565699)

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<body style="padding: 20px; width: 400px; font-family: sans-serif;">
+    <h2>Cloud Credentials Setup</h2>
+    <p style="color:red; font-size:12px;">Ensure keys have READ-ONLY permissions (CostExplorer, Budgets).</p>
+
+    <h3>AWS Configuration</h3>
+    <label>Access Key ID:</label>
+    <input type="text" id="awsKey" style="width: 100%; margin-bottom: 10px;">
+
+    <label>Secret Access Key:</label>
+    <input type="password" id="awsSecret" style="width: 100%; margin-bottom: 10px;">
+
+    <button id="save">Save Credentials</button>
+    <div id="status"></div>
+
+    <script src="options.js"></script>
+</body>
+
+</html>

@@ -90,10 +90,16 @@ async function fetchAllData() {
         creds.gcp?.json ? fetchGCPCost(creds.gcp) : Promise.reject("GCP Not Configured")
     ]);
 
-    // Extract data safely
-    const awsData = results[0].status === 'fulfilled' ? results[0].value : { totalCost: 0, error: true };
-    const azureData = results[1].status === 'fulfilled' ? results[1].value : { totalCost: 0, error: true };
-    const gcpData = results[2].status === 'fulfilled' ? results[2].value : { totalCost: 0, error: true };
+    // Extract data safely — capture error reason for display
+    const awsData = results[0].status === 'fulfilled'
+        ? results[0].value
+        : { totalCost: 0, error: true, errorMsg: String(results[0].reason?.message || results[0].reason || 'Unknown error') };
+    const azureData = results[1].status === 'fulfilled'
+        ? results[1].value
+        : { totalCost: 0, error: true, errorMsg: String(results[1].reason?.message || results[1].reason || 'Unknown error') };
+    const gcpData = results[2].status === 'fulfilled'
+        ? results[2].value
+        : { totalCost: 0, error: true, errorMsg: String(results[2].reason?.message || results[2].reason || 'Unknown error') };
 
     // Convert to User's Currency
     const convert = (val) => val * rate;

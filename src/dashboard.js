@@ -150,10 +150,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     else if (budgetPct >= 80) alerts.push({ type: 'warn', icon: '⚠️', title: 'Budget Warning', desc: `${budgetPct.toFixed(1)}% of budget used. Approaching limit.` });
     if (data.aws?.anomaly?.isAnomaly) alerts.push({ type: 'danger', icon: '📈', title: 'AWS Cost Spike', desc: `Yesterday's spend (${fRaw(data.aws.anomaly.today)}) was >3× the 14-day average (${fRaw(data.aws.anomaly.average)}).` });
     if (totalForecast > budgetLimit * 1.1) alerts.push({ type: 'warn', icon: '🔮', title: 'Forecast Exceeds Budget', desc: `Predicted EOM bill of ${f(totalForecast)} exceeds your limit.` });
-    // Only show "No Providers Connected" if ALL providers have errors AND total is 0
-    // (i.e. not just Azure/GCP being unconfigured while AWS is working)
+    // Only show fetch-failed alert when ALL providers errored AND total is 0
     if (data.aws?.error && data.azure?.error && data.gcp?.error && data.totalGlobal === 0) {
-        alerts.push({ type: 'warn', icon: '⚠️', title: 'No Cost Data Available', desc: 'AWS fetch may have failed. Check your credentials in Settings or wait for the next refresh.' });
+        const awsErr = data.aws?.errorMsg || '';
+        const isNotConfigured = awsErr === 'AWS Not Configured';
+        if (!isNotConfigured) {
+            alerts.push({
+                type: 'danger',
+                icon: '🔴',
+                title: 'AWS Fetch Failed',
+                desc: awsErr
+                    ? `Error: ${awsErr}. Check your IAM key permissions or that Cost Explorer is enabled.`
+                    : 'AWS API call failed. Check your credentials in Settings.'
+            });
+        }
     }
 
     setEl('kpi-alerts', alerts.length);
@@ -191,6 +201,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     setEl('aws-forecast', fRaw(awsForecast));
     setEl('aws-top', data.aws?.services?.[0]?.name || '–');
     setEl('aws-anomaly', data.aws?.anomaly?.isAnomaly ? `⚠ Spike: ${fRaw(data.aws.anomaly.today)}` : '✓ Normal');
+    // Show error detail in provider card if fetch failed
+    if (data.aws?.error && data.aws?.errorMsg && data.aws.errorMsg !== 'AWS Not Configured') {
+        const errEl = document.getElementById('aws-mtd');
+        if (errEl) {
+            errEl.style.color = 'var(--red)';
+            errEl.style.fontSize = '11px';
+            errEl.innerText = data.aws.errorMsg.length > 55
+                ? data.aws.errorMsg.slice(0, 55) + '…'
+                : data.aws.errorMsg;
+        }
+    }
 
     setEl('azure-mtd', fRaw(azureCost));
     setEl('azure-forecast', fRaw(azureForecast));

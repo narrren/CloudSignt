@@ -26,18 +26,24 @@ async function fetchAllData() {
     const result = await chrome.storage.local.get("cloudCreds");
     const creds = result.cloudCreds || {};
 
-    // Parallel Fetching
-    const [awsData, azureData, gcpData] = await Promise.all([
-        creds.aws?.key ? fetchAWS(creds.aws) : Promise.resolve(null),
-        creds.azure?.client ? fetchAzureCost(creds.azure) : Promise.resolve(null),
-        creds.gcp?.json ? fetchGCPCost(creds.gcp) : Promise.resolve(null)
+    // use Promise.allSettled to allow partial failures
+    const results = await Promise.allSettled([
+        creds.aws?.key ? fetchAWS(creds.aws) : Promise.reject("AWS Not Configured"),
+        creds.azure?.client ? fetchAzureCost(creds.azure) : Promise.reject("Azure Not Configured"),
+        creds.gcp?.json ? fetchGCPCost(creds.gcp) : Promise.reject("GCP Not Configured")
     ]);
+
+    // Extract data safely
+    const awsData = results[0].status === 'fulfilled' ? results[0].value : { totalCost: 0, error: true };
+    const azureData = results[1].status === 'fulfilled' ? results[1].value : { totalCost: 0, error: true };
+    const gcpData = results[2].status === 'fulfilled' ? results[2].value : { totalCost: 0, error: true };
 
     const combined = {
         aws: awsData,
         azure: azureData,
         gcp: gcpData,
-        totalGlobal: (awsData?.totalCost || 0) + (azureData?.totalCost || 0) + (gcpData?.totalCost || 0),
+        // Only sum up valid numbers
+        totalGlobal: (awsData.totalCost || 0) + (azureData.totalCost || 0) + (gcpData.totalCost || 0),
         lastUpdated: new Date().toISOString()
     };
 

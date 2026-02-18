@@ -4,9 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.local.get(['dashboardData', 'lastUpdated'], (result) => {
         const data = result.dashboardData;
         if (!data) {
-            document.getElementById('total-cost').innerText = "No Data";
+            const costEl = document.getElementById('total-cost');
+            costEl.innerText = "Setup Required";
+            costEl.style.fontSize = "20px";
+            costEl.style.cursor = "pointer";
+            costEl.style.color = "#3498db";
+            costEl.title = "Click to Open Settings";
+            costEl.onclick = () => chrome.runtime.openOptionsPage();
             return;
         }
+
 
         // 1. Text Updates
         document.getElementById('total-cost').innerText = `$${data.totalGlobal.toFixed(2)}`;

@@ -10,7 +10,9 @@
     "host_permissions": [
         "https://*.amazonaws.com/*",
         "https://management.azure.com/*",
-        "https://cloudbilling.googleapis.com/*"
+        "https://login.microsoftonline.com/*",
+        "https://cloudbilling.googleapis.com/*",
+        "https://oauth2.googleapis.com/*"
     ],
     "options_ui": {
         "page": "options.html",

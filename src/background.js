@@ -1,5 +1,7 @@
 import { CostExplorerClient, GetCostAndUsageCommand, GetCostForecastCommand }
     from "@aws-sdk/client-cost-explorer";
+import { fetchAzureCost } from "./azureService";
+import { fetchGCPCost } from "./gcpService";
 
 // 1. Setup Alarm (Check cost every 6 hours)
 chrome.runtime.onInstalled.addListener(() => {
@@ -21,24 +23,36 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // 2. Main Fetch Logic
 async function fetchAllData() {
-    const data = await chrome.storage.local.get("awsCreds");
-    if (!data.awsCreds) return;
+    const result = await chrome.storage.local.get("cloudCreds");
+    const creds = result.cloudCreds || {};
 
-    try {
-        const awsData = await fetchAWS(data.awsCreds);
+    // Parallel Fetching
+    const [awsData, azureData, gcpData] = await Promise.all([
+        creds.aws?.key ? fetchAWS(creds.aws) : Promise.resolve(null),
+        creds.azure?.client ? fetchAzureCost(creds.azure) : Promise.resolve(null),
+        creds.gcp?.json ? fetchGCPCost(creds.gcp) : Promise.resolve(null)
+    ]);
 
-        // Check for Alerts
-        checkBudgets(awsData);
+    const combined = {
+        aws: awsData,
+        azure: azureData,
+        gcp: gcpData,
+        totalGlobal: (awsData?.totalCost || 0) + (azureData?.totalCost || 0) + (gcpData?.totalCost || 0),
+        lastUpdated: new Date().toISOString()
+    };
 
-        // Save to Storage
-        chrome.storage.local.set({
-            dashboardData: awsData,
-            lastUpdated: new Date().toISOString()
+    // Check Budgets (Global Limit)
+    const GLOBAL_LIMIT = 1000;
+    if (combined.totalGlobal > GLOBAL_LIMIT) {
+        chrome.notifications.create({
+            type: 'basic',
+            iconUrl: 'icon.png',
+            title: 'Global Budget Exceeded!',
+            message: `Total spend is $${combined.totalGlobal.toFixed(2)}`
         });
-
-    } catch (err) {
-        console.error("API Fetch Failed", err);
     }
+
+    chrome.storage.local.set({ dashboardData: combined });
 }
 
 // 3. AWS Implementation
@@ -46,8 +60,8 @@ async function fetchAWS(creds) {
     const client = new CostExplorerClient({
         region: "us-east-1", // Cost Explorer is global but endpoint is usually us-east-1
         credentials: {
-            accessKeyId: creds.accessKeyId,
-            secretAccessKey: creds.secretAccessKey
+            accessKeyId: creds.key,
+            secretAccessKey: creds.secret
         }
     });
 
@@ -99,18 +113,4 @@ function calculateTotal(response) {
     // Sum up all groups
     return response.ResultsByTime[0].Groups
         .reduce((acc, curr) => acc + parseFloat(curr.Metrics.UnblendedCost.Amount), 0);
-}
-
-// 4. Budget Alert Logic
-function checkBudgets(data) {
-    const BUDGET_LIMIT = 500.00; // You can make this user-configurable in options
-
-    if (data.totalCost > BUDGET_LIMIT) {
-        chrome.notifications.create({
-            type: 'basic',
-            iconUrl: 'icon.png',
-            title: 'Budget Exceeded!',
-            message: `Current spend is $${data.totalCost.toFixed(2)}, exceeding limit of $${BUDGET_LIMIT}.`
-        });
-    }
 }

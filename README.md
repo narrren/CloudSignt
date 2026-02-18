@@ -3,13 +3,17 @@
 CloudSight project repository: Cloud Command Center Chrome Extension.
 
 ## Overview
-A "Pro-Grade" Chrome Extension that visualizes AWS Cloud Costs securely using the official AWS SDK and Chart.js.
+A "Pro-Grade" Chrome Extension that visualizes **AWS, Azure, and Google Cloud (GCP)** Costs securely using official SDKs and direct API integrations.
 
 ## Features
-- **Secure Credentials Storage**: Access keys are stored locally and encrypted.
+- **Multi-Cloud Support**:
+  - **AWS**: via Cost Explorer SDK (SigV4).
+  - **Azure**: via Cost Management REST API (OAuth).
+  - **GCP**: via Cloud Billing API (Signed JWTs).
+- **Secure Credentials Storage**: Access keys and Service Principals are stored locally and encrypted.
 - **Background Fetching**: Uses `chrome.alarms` to fetch data every 6 hours.
-- **Cost Visualization**: Interactive charts using Chart.js.
-- **Budget Alerts**: Notifications when spending exceeds a threshold.
+- **Cost Visualization**: Unified dashboard aggregating costs from all providers.
+- **Budget Alerts**: Global threshold notifications.
 
 ## Installation
 
@@ -39,8 +43,9 @@ A "Pro-Grade" Chrome Extension that visualizes AWS Cloud Costs securely using th
 4. Select the `dist/` folder inside the `CloudSight` project directory.
 5. The extension "Cloud Command Center" should appear.
 
-## Usage
-1. Click the extension icon and go to **Options** (right-click -> Options, or via the extensions page details).
-2. Enter your AWS Read-Only credentials.
-3. Save. The extension will fetch data in the background.
-4. Open the popup to view your cloud costs and forecast.
+## Configuration
+1. Click the extension icon and go to **Options**.
+2. **AWS**: Enter Access Key ID and Secret Access Key (Read Only permissions required).
+3. **Azure**: Enter Tenant ID, Client ID, Client Secret, and Subscription ID (Service Principal with Cost Management Reader role).
+4. **GCP**: Paste the full JSON content of your Service Account Key (Billing Viewer role) and your Billing Account ID.
+5. Save. The extension will fetch and aggregate data in the background.

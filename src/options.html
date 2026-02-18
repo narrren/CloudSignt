@@ -1,20 +1,41 @@
 <!DOCTYPE html>
 <html>
 
-<body style="padding: 20px; width: 400px; font-family: sans-serif;">
+<body style="padding: 20px; width: 450px; font-family: sans-serif;">
     <h2>Cloud Credentials Setup</h2>
-    <p style="color:red; font-size:12px;">Ensure keys have READ-ONLY permissions (CostExplorer, Budgets).</p>
+    <div id="status" style="color: green; font-weight: bold;"></div>
 
-    <h3>AWS Configuration</h3>
-    <label>Access Key ID:</label>
-    <input type="text" id="awsKey" style="width: 100%; margin-bottom: 10px;">
+    <!-- AWS -->
+    <details open>
+        <summary><strong>AWS Configuration</strong></summary>
+        <input type="text" id="awsKey" placeholder="Access Key ID" style="width: 100%; margin: 5px 0;">
+        <input type="password" id="awsSecret" placeholder="Secret Access Key" style="width: 100%; margin: 5px 0;">
+    </details>
+    <hr>
 
-    <label>Secret Access Key:</label>
-    <input type="password" id="awsSecret" style="width: 100%; margin-bottom: 10px;">
+    <!-- AZURE -->
+    <details>
+        <summary><strong>Azure Configuration</strong></summary>
+        <p style="font-size:11px; color:#666;">Create a Service Principal with "Cost Management Reader".</p>
+        <input type="text" id="azTenant" placeholder="Tenant ID" style="width: 100%; margin: 5px 0;">
+        <input type="text" id="azClient" placeholder="Client ID (App ID)" style="width: 100%; margin: 5px 0;">
+        <input type="password" id="azSecret" placeholder="Client Secret" style="width: 100%; margin: 5px 0;">
+        <input type="text" id="azSub" placeholder="Subscription ID" style="width: 100%; margin: 5px 0;">
+    </details>
+    <hr>
 
-    <button id="save">Save Credentials</button>
-    <div id="status"></div>
+    <!-- GCP -->
+    <details>
+        <summary><strong>Google Cloud (GCP)</strong></summary>
+        <p style="font-size:11px; color:#666;">Paste the content of your Service Account JSON key file (Billing Viewer
+            role).</p>
+        <textarea id="gcpJson" rows="5" placeholder='{"type": "service_account", ...}' style="width: 100%;"></textarea>
+        <input type="text" id="gcpBillingId" placeholder="Billing Account ID (e.g. 012345-567890-ABCDEF)"
+            style="width: 100%; margin: 5px 0;">
+    </details>
 
+    <br>
+    <button id="save" style="width: 100%; padding: 10px;">Save All Credentials</button>
     <script src="options.js"></script>
 </body>
 

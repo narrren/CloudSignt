@@ -41,8 +41,29 @@ document.getElementById('save').addEventListener('click', async () => {
     }
 
     chrome.storage.local.set(storagePayload, () => {
-        document.getElementById('status').innerText = 'Credentials Saved!';
-        setTimeout(() => document.getElementById('status').innerText = '', 2000);
+        const statusEl = document.getElementById('status');
+        statusEl.innerText = '✓ Credentials saved successfully!';
+        statusEl.className = 'status-msg success';
+        setTimeout(() => {
+            statusEl.innerText = 'Fill in your credentials above and click Save.';
+            statusEl.className = 'status-msg';
+        }, 3000);
+
+        // Update badges
+        if (creds.aws?.key) {
+            const b = document.getElementById('aws-badge');
+            if (b) { b.innerText = '✓ Connected'; b.className = 'section-badge badge-connected'; }
+        }
+        if (creds.azure?.client) {
+            const b = document.getElementById('azure-badge');
+            if (b) { b.innerText = '✓ Connected'; b.className = 'section-badge badge-connected'; }
+        }
+        if (creds.gcp?.json) {
+            const b = document.getElementById('gcp-badge');
+            if (b) { b.innerText = '✓ Connected'; b.className = 'section-badge badge-connected'; }
+        }
+
         chrome.runtime.sendMessage({ action: "FORCE_REFRESH" });
     });
+
 });

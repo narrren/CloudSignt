@@ -12,12 +12,12 @@ function f(val, currency = 'USD') {
 // 1. Initialize
 document.addEventListener('DOMContentLoaded', async () => {
     const data = await chrome.storage.local.get(['dashboardData']);
-    if (data && data.dashboardData) {
-        renderDashboard(data.dashboardData);
-    } else {
-        // Handle empty state
-        document.getElementById('kpi-total').innerText = '$0.00';
-    }
+    // if (data && data.dashboardData) {
+    //     renderDashboard(data.dashboardData);
+    // } else {
+    //     // Handle empty state
+    //     // document.getElementById('kpi-total').innerText = '$0.00';
+    // }
 });
 
 function renderDashboard(data) {

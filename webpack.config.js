@@ -20,6 +20,7 @@ module.exports = {
       patterns: [
         { from: 'src/manifest.json', to: '.' },
         { from: 'src/popup.html', to: '.' },
+        { from: 'src/styles.css', to: '.', noErrorOnMissing: true },
         { from: 'src/options.html', to: '.' },
         { from: 'src/dashboard.html', to: '.', noErrorOnMissing: true },
         { from: 'src/icon.png', to: '.', noErrorOnMissing: true },

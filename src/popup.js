@@ -1,14 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.local.get(['dashboardData'], (result) => {
         const data = result.dashboardData;
-        if (data) {
-            updateUI(data);
-        } else {
-            // Trigger a background refresh if no data exists?
-            // For now just show placeholders or error
-            document.getElementById('total-spend').innerText = '$0.00';
-            document.getElementById('forecast-spend').innerText = '$0.00';
-        }
+        // UI updates disabled for static mockup stability
+        // if (data) {
+        //     updateUI(data);
+        // } else {
+        //     // Trigger a background refresh if no data exists?
+        //     // For now just show placeholders or error
+        //     // document.getElementById('total-spend').innerText = '$0.00';
+        //     // document.getElementById('forecast-spend').innerText = '$0.00';
+        // }
     });
 
     // Navigation Listeners

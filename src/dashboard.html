@@ -12,918 +12,12 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
+    <!-- Local CSS replacing CDN -->
+    <link rel="stylesheet" href="styles.css">
     <style>
-        /* Tailwind-like Utility Classes for CloudSight Extension (Offline Safe) */
-        /* Reset */
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-        }
-
         body {
-            margin: 0;
-            font-family: 'Inter', system-ui, sans-serif;
-            background-color: #0B0E14;
-            color: #cbd5e1;
-        }
-
-        button {
-            cursor: pointer;
-            border: none;
-            background: none;
-            padding: 0;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        /* Colors */
-        :root {
-            --bg-dark: #0B0E14;
-            --bg-card: #151921;
-            --bg-slate-800: #1e293b;
-            --border-dark: #272B36;
-            --text-white: #ffffff;
-            --text-muted: #8A8F98;
-            --primary: #6366F1;
-            --emerald-500: #10b981;
-            --rose-500: #f43f5e;
-            --amber-500: #f59e0b;
-        }
-
-        /* Layout */
-        .flex {
-            display: flex;
-        }
-
-        .flex-col {
-            flex-direction: column;
-        }
-
-        .items-center {
-            align-items: center;
-        }
-
-        .items-baseline {
-            align-items: baseline;
-        }
-
-        .justify-between {
-            justify-content: space-between;
-        }
-
-        .justify-center {
-            justify-content: center;
-        }
-
-        .flex-1 {
-            flex: 1 1 0%;
-        }
-
-        .grid {
-            display: grid;
-        }
-
-        .grid-cols-1 {
-            grid-template-columns: repeat(1, minmax(0, 1fr));
-        }
-
-        .grid-cols-2 {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .grid-cols-3 {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-
-        .grid-cols-12 {
-            grid-template-columns: repeat(12, minmax(0, 1fr));
-        }
-
-        .gap-1 {
-            gap: 0.25rem;
-        }
-
-        .gap-2 {
-            gap: 0.5rem;
-        }
-
-        .gap-3 {
-            gap: 0.75rem;
-        }
-
-        .gap-4 {
-            gap: 1rem;
-        }
-
-        .gap-6 {
-            gap: 1.5rem;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .relative {
-            position: relative;
-        }
-
-        .absolute {
-            position: absolute;
-        }
-
-        .sticky {
-            position: sticky;
-        }
-
-        .top-0 {
-            top: 0;
-        }
-
-        .bottom-0 {
-            bottom: 0;
-        }
-
-        .right-0 {
-            right: 0;
-        }
-
-        .left-0 {
-            left: 0;
-        }
-
-        .inset-0 {
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-        }
-
-        .-top-0\.5 {
-            top: -0.125rem;
-        }
-
-        .-right-0\.5 {
-            right: -0.125rem;
-        }
-
-        .z-10 {
-            z-index: 10;
-        }
-
-        .z-20 {
-            z-index: 20;
-        }
-
-        .z-\[-1\] {
-            z-index: -1;
-        }
-
-        .pointer-events-none {
-            pointer-events: none;
-        }
-
-        /* Sizing */
-        .w-full {
-            width: 100%;
-        }
-
-        .h-full {
-            height: 100%;
-        }
-
-        .h-screen {
-            height: 100vh;
-        }
-
-        .w-[350px] {
-            width: 350px;
-        }
-
-        .h-[550px] {
-            height: 550px;
-        }
-
-        .w-64 {
-            width: 16rem;
-        }
-
-        .size-4 {
-            width: 1rem;
-            height: 1rem;
-        }
-
-        .size-6 {
-            width: 1.5rem;
-            height: 1.5rem;
-        }
-
-        .w-1 {
-            width: 0.25rem;
-        }
-
-        .w-2 {
-            width: 0.5rem;
-        }
-
-        .h-2 {
-            height: 0.5rem;
-        }
-
-        .w-2\.5 {
-            width: 0.625rem;
-        }
-
-        .h-2\.5 {
-            height: 0.625rem;
-        }
-
-        .w-4 {
-            width: 1rem;
-        }
-
-        .h-4 {
-            height: 1rem;
-        }
-
-        .w-5 {
-            width: 1.25rem;
-        }
-
-        .h-5 {
-            height: 1.25rem;
-        }
-
-        .w-6 {
-            width: 1.5rem;
-        }
-
-        .h-6 {
-            height: 1.5rem;
-        }
-
-        .w-8 {
-            width: 2rem;
-        }
-
-        .h-8 {
-            height: 2rem;
-        }
-
-        .h-16 {
-            height: 4rem;
-        }
-
-        .w-16 {
-            width: 4rem;
-        }
-
-        .h-20 {
-            height: 5rem;
-        }
-
-        .h-28 {
-            height: 7rem;
-        }
-
-        .h-48 {
-            height: 12rem;
-        }
-
-        .w-48 {
-            width: 12rem;
-        }
-
-        .h-80 {
-            height: 20rem;
-        }
-
-        /* Spacing */
-        .p-1 {
-            padding: 0.25rem;
-        }
-
-        .p-3 {
-            padding: 0.75rem;
-        }
-
-        .p-4 {
-            padding: 1rem;
-        }
-
-        .p-5 {
-            padding: 1.25rem;
-        }
-
-        .p-6 {
-            padding: 1.5rem;
-        }
-
-        .p-8 {
-            padding: 2rem;
-        }
-
-        .px-1\.5 {
-            padding-left: 0.375rem;
-            padding-right: 0.375rem;
-        }
-
-        .py-0\.5 {
-            padding-top: 0.125rem;
-            padding-bottom: 0.125rem;
-        }
-
-        .py-2\.5 {
-            padding-top: 0.625rem;
-            padding-bottom: 0.625rem;
-        }
-
-        .px-1 {
-            padding-left: 0.25rem;
-            padding-right: 0.25rem;
-        }
-
-        .px-3 {
-            padding-left: 0.75rem;
-            padding-right: 0.75rem;
-        }
-
-        .px-4 {
-            padding-left: 1rem;
-            padding-right: 1rem;
-        }
-
-        .px-5 {
-            padding-left: 1.25rem;
-            padding-right: 1.25rem;
-        }
-
-        .py-1 {
-            padding-top: 0.25rem;
-            padding-bottom: 0.25rem;
-        }
-
-        .py-2 {
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-        }
-
-        .py-3 {
-            padding-top: 0.75rem;
-            padding-bottom: 0.75rem;
-        }
-
-        .mt-0\.5 {
-            margin-top: 0.125rem;
-        }
-
-        .mt-1 {
-            margin-top: 0.25rem;
-        }
-
-        .mt-2 {
-            margin-top: 0.5rem;
-        }
-
-        .mt-3 {
-            margin-top: 0.75rem;
-        }
-
-        .mt-4 {
-            margin-top: 1rem;
-        }
-
-        .mb-1 {
-            margin-bottom: 0.25rem;
-        }
-
-        .mb-2 {
-            margin-bottom: 0.5rem;
-        }
-
-        .mb-6 {
-            margin-bottom: 1.5rem;
-        }
-
-        .mb-8 {
-            margin-bottom: 2rem;
-        }
-
-        .mx-auto {
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Typography */
-        .text-xs {
-            font-size: 0.75rem;
-        }
-
-        .text-sm {
-            font-size: 0.875rem;
-        }
-
-        .text-lg {
-            font-size: 1.125rem;
-        }
-
-        .text-xl {
-            font-size: 1.25rem;
-        }
-
-        .text-2xl {
-            font-size: 1.5rem;
-        }
-
-        .text-3xl {
-            font-size: 1.875rem;
-        }
-
-        .text-5xl {
-            font-size: 3rem;
-        }
-
-        .text-6xl {
-            font-size: 3.75rem;
-        }
-
-        .text-\[9px\] {
-            font-size: 9px;
-        }
-
-        .text-\[10px\] {
-            font-size: 10px;
-        }
-
-        .text-\[11px\] {
-            font-size: 11px;
-        }
-
-        .text-\[12px\] {
-            font-size: 12px;
-        }
-
-        .text-\[16px\] {
-            font-size: 16px;
-        }
-
-        .text-\[18px\] {
-            font-size: 18px;
-        }
-
-        .text-\[32px\] {
-            font-size: 32px;
-        }
-
-        .text-\[40px\] {
-            font-size: 40px;
-        }
-
-        .font-medium {
-            font-weight: 500;
-        }
-
-        .font-bold {
-            font-weight: 700;
-        }
-
-        .font-semibold {
-            font-weight: 600;
-        }
-
-        .uppercase {
-            text-transform: uppercase;
-        }
-
-        .tracking-tight {
-            letter-spacing: -0.025em;
-        }
-
-        .tracking-wide {
-            letter-spacing: 0.025em;
-        }
-
-        .tracking-wider {
-            letter-spacing: 0.05em;
-        }
-
-        .tracking-widest {
-            letter-spacing: 0.1em;
-        }
-
-        .truncate {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .leading-none {
-            line-height: 1;
-        }
-
-        .text-white {
-            color: #fff;
-        }
-
-        .text-slate-100 {
-            color: #f1f5f9;
-        }
-
-        .text-slate-200 {
-            color: #e2e8f0;
-        }
-
-        .text-slate-300 {
-            color: #cbd5e1;
-        }
-
-        .text-slate-400 {
-            color: #94a3b8;
-        }
-
-        .text-slate-500 {
-            color: #64748b;
-        }
-
-        .text-muted-text {
-            color: #8A8F98;
-        }
-
-        .text-primary {
-            color: #6366F1;
-        }
-
-        .text-emerald-400 {
-            color: #34d399;
-        }
-
-        .text-emerald-500 {
-            color: #10b981;
-        }
-
-        .text-rose-400 {
-            color: #fb7185;
-        }
-
-        .text-rose-500 {
-            color: #f43f5e;
-        }
-
-        .text-amber-500 {
-            color: #f59e0b;
-        }
-
-        .text-indigo-400 {
-            color: #818cf8;
-        }
-
-        .text-indigo-500 {
-            color: #6366f1;
-        }
-
-        .text-\[\#FF9900\] {
-            color: #FF9900;
-        }
-
-        .text-\[\#0078D4\] {
-            color: #0078D4;
-        }
-
-        .text-\[\#DB4437\] {
-            color: #DB4437;
-        }
-
-        /* Backgrounds/Borders */
-        .bg-white\/5 {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        .bg-white\/10 {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .bg-slate-800 {
-            background-color: #1e293b;
-        }
-
-        .bg-slate-800\/40 {
-            background-color: rgba(30, 41, 59, 0.4);
-        }
-
-        .bg-slate-900 {
-            background-color: #0f172a;
-        }
-
-        .bg-\[\#0F172A\] {
-            background-color: #0F172A;
-        }
-
-        .bg-\[\#0B0E14\] {
-            background-color: #0B0E14;
-        }
-
-        .bg-\[\#0B0E14\]\/80 {
-            background-color: rgba(11, 14, 20, 0.8);
-        }
-
-        .bg-\[\#0B0E14\]\/95 {
-            background-color: rgba(11, 14, 20, 0.95);
-        }
-
-        .bg-\[\#0e121a\] {
-            background-color: #0e121a;
-        }
-
-        .bg-\[\#151921\]\/90 {
-            background-color: rgba(21, 25, 33, 0.9);
-        }
-
-        .bg-background-dark {
-            background-color: #0B0E14;
-        }
-
-        .bg-background-dark\/50 {
-            background-color: rgba(11, 14, 20, 0.5);
-        }
-
-        .bg-card-dark {
-            background-color: #151921;
-        }
-
-        .bg-indigo-500\/10 {
-            background-color: rgba(99, 102, 241, 0.1);
-        }
-
-        .bg-primary\/10 {
-            background-color: rgba(99, 102, 241, 0.1);
-        }
-
-        .bg-primary\/20 {
-            background-color: rgba(99, 102, 241, 0.2);
-        }
-
-        .bg-emerald-500\/10 {
-            background-color: rgba(16, 185, 129, 0.1);
-        }
-
-        .bg-amber-500\/5 {
-            background-color: rgba(245, 158, 11, 0.05);
-        }
-
-        .bg-rose-500 {
-            background-color: #f43f5e;
-        }
-
-        .bg-rose-500\/10 {
-            background-color: rgba(244, 63, 94, 0.1);
-        }
-
-        .bg-gradient-to-br {
-            background-image: linear-gradient(to bottom right, var(--tw-gradient-from), var(--tw-gradient-to));
-        }
-
-        .bg-gradient-to-tr {
-            background-image: linear-gradient(to top right, var(--tw-gradient-from), var(--tw-gradient-to));
-        }
-
-        .bg-gradient-to-r {
-            background-image: linear-gradient(to right, var(--tw-gradient-from), var(--tw-gradient-to));
-        }
-
-        .bg-gradient-to-b {
-            background-image: linear-gradient(to bottom, var(--tw-gradient-from), var(--tw-gradient-to));
-        }
-
-        .from-primary {
-            --tw-gradient-from: #6366F1;
-            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-        }
-
-        .to-indigo-600 {
-            --tw-gradient-to: #4f46e5;
-        }
-
-        .to-purple-400 {
-            --tw-gradient-to: #c084fc;
-        }
-
-        .from-slate-900 {
-            --tw-gradient-from: #0f172a;
-            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-        }
-
-        .to-slate-800 {
-            --tw-gradient-to: #1e293b;
-        }
-
-        .from-rose-500 {
-            --tw-gradient-from: #f43f5e;
-            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-        }
-
-        .to-orange-500 {
-            --tw-gradient-to: #f97316;
-        }
-
-        .border {
-            border-width: 1px;
-            border-style: solid;
-        }
-
-        .border-b {
-            border-bottom-width: 1px;
-            border-bottom-style: solid;
-        }
-
-        .border-t {
-            border-top-width: 1px;
-            border-top-style: solid;
-        }
-
-        .border-r {
-            border-right-width: 1px;
-            border-right-style: solid;
-        }
-
-        .border-slate-800 {
-            border-color: #1e293b;
-        }
-
-        .border-slate-800\/40 {
-            border-color: rgba(30, 41, 59, 0.4);
-        }
-
-        .border-card-border {
-            border-color: #272B36;
-        }
-
-        .border-border-dark {
-            border-color: #272B36;
-        }
-
-        .border-white\/5 {
-            border-color: rgba(255, 255, 255, 0.05);
-        }
-
-        .border-indigo-500\/20 {
-            border-color: rgba(99, 102, 241, 0.2);
-        }
-
-        .border-amber-500\/20 {
-            border-color: rgba(245, 158, 11, 0.2);
-        }
-
-        .border-emerald-500\/20 {
-            border-color: rgba(16, 185, 129, 0.2);
-        }
-
-        .border-rose-500\/20 {
-            border-color: rgba(244, 63, 94, 0.2);
-        }
-
-        .border-primary\/20 {
-            border-color: rgba(99, 102, 241, 0.2);
-        }
-
-        /* Misc */
-        .rounded {
-            border-radius: 0.25rem;
-        }
-
-        .rounded-md {
-            border-radius: 0.375rem;
-        }
-
-        .rounded-lg {
-            border-radius: 0.5rem;
-        }
-
-        .rounded-xl {
-            border-radius: 0.75rem;
-        }
-
-        .rounded-\[10px\] {
-            border-radius: 10px;
-        }
-
-        .rounded-full {
-            border-radius: 9999px;
-        }
-
-        .shadow-glow {
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
-        }
-
-        .shadow-sm {
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-
-        .backdrop-blur {
-            backdrop-filter: blur(8px);
-        }
-
-        .backdrop-blur-sm {
-            backdrop-filter: blur(4px);
-        }
-
-        .backdrop-blur-xl {
-            backdrop-filter: blur(24px);
-        }
-
-        .opacity-10 {
-            opacity: 0.1;
-        }
-
-        .opacity-20 {
-            opacity: 0.2;
-        }
-
-        .opacity-30 {
-            opacity: 0.3;
-        }
-
-        .opacity-40 {
-            opacity: 0.4;
-        }
-
-        .opacity-60 {
-            opacity: 0.6;
-        }
-
-        .opacity-100 {
-            opacity: 1;
-        }
-
-        .grayscale {
-            filter: grayscale(100%);
-        }
-
-        .transition-all {
-            transition: all 150ms;
-        }
-
-        .transition-transform {
-            transition-property: transform;
-            transition-duration: 150ms;
-        }
-
-        .transition-colors {
-            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-            transition-duration: 150ms;
-        }
-
-        .transition-opacity {
-            transition-property: opacity;
-            transition-duration: 150ms;
-        }
-
-        .duration-300 {
-            transition-duration: 300ms;
-        }
-
-        .duration-1000 {
-            transition-duration: 1000ms;
-        }
-
-        .cursor-pointer {
-            cursor: pointer;
-        }
-
-        .animate-pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            50% {
-                opacity: .5;
-            }
-        }
-
-        .overflow-hidden {
-            overflow: hidden;
-        }
-
-        .overflow-y-auto {
-            overflow-y: auto;
-        }
-
-        .group:hover .group-hover\:opacity-20 {
-            opacity: 0.2;
-        }
-
-        .group:hover .group-hover\:opacity-30 {
-            opacity: 0.3;
-        }
-
-        .group:hover .group-hover\:scale-110 {
-            transform: scale(1.1);
-        }
-
-        .group:hover .group-hover\:text-white {
-            color: #fff;
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(circle at 50% 0%, #1a1f2e 0%, #0B0E14 60%);
         }
 
         ::-webkit-scrollbar {
@@ -959,6 +53,11 @@
         .bg-subtle-grid {
             background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23272B36' fill-opacity='0.4' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3C/g%3E%3C/svg%3E");
         }
+
+        /* Fonts */
+        .font-display {
+            font-family: 'Inter', sans-serif;
+        }
     </style>
 </head>
 
@@ -979,25 +78,38 @@
             <div class="space-y-1">
                 <p class="px-3 text-[11px] font-semibold text-muted-text/60 uppercase tracking-widest mb-2">Dashboard
                 </p>
-                <a id="nav-overview"
-                    class="flex items-center gap-3 px-3 py-2 rounded-md bg-white/5 text-white border border-white/5 transition-all"
+                <a class="flex items-center gap-3 px-3 py-2 rounded-md bg-white/5 text-white border border-white/5 transition-all"
                     href="#">
                     <span class="material-symbols-outlined text-[18px] text-primary">dashboard</span>
                     <span class="text-sm font-medium">Overview</span>
                 </a>
                 <a class="flex items-center gap-3 px-3 py-2 rounded-md text-muted-text hover:text-white hover:bg-white/5 transition-colors"
                     href="#">
+                    <span class="material-symbols-outlined text-[18px]">bar_chart</span>
+                    <span class="text-sm font-medium">Cost Analytics</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2 rounded-md text-muted-text hover:text-white hover:bg-white/5 transition-colors"
+                    href="#">
+                    <span class="material-symbols-outlined text-[18px]">pie_chart</span>
+                    <span class="text-sm font-medium">Budgets</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2 rounded-md text-muted-text hover:text-white hover:bg-white/5 transition-colors"
+                    href="#">
+                    <span class="material-symbols-outlined text-[18px]">trending_up</span>
+                    <span class="text-sm font-medium">Forecasting</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2 rounded-md text-muted-text hover:text-white hover:bg-white/5 transition-colors"
+                    href="#">
                     <span class="material-symbols-outlined text-[18px]">notifications</span>
                     <span class="text-sm font-medium">Alerts</span>
-                    <span id="nav-alerts-indicator" style="display:none"
+                    <span
                         class="ml-auto flex h-1.5 w-1.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]"></span>
                 </a>
             </div>
             <div class="space-y-1">
                 <p class="px-3 text-[11px] font-semibold text-muted-text/60 uppercase tracking-widest mb-2">Integration
                     Status</p>
-
-                <div id="status-row-aws"
+                <div
                     class="px-3 py-2 flex items-center justify-between group cursor-pointer hover:bg-white/5 rounded-md">
                     <div class="flex items-center gap-3">
                         <div class="w-5 h-5 flex items-center justify-center">
@@ -1009,12 +121,10 @@
                         </div>
                         <span class="text-sm font-medium text-white">AWS</span>
                     </div>
-                    <!-- Status Dot -->
-                    <div id="status-dot-aws" class="h-1.5 w-1.5 rounded-full bg-slate-600"></div>
+                    <div class="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.8)]"></div>
                 </div>
-
-                <div id="status-row-azure"
-                    class="px-3 py-2 flex items-center justify-between group cursor-pointer hover:bg-white/5 rounded-md opacity-60">
+                <div
+                    class="px-3 py-2 flex items-center justify-between group cursor-pointer hover:bg-white/5 rounded-md opacity-60 hover:opacity-100 transition-opacity">
                     <div class="flex items-center gap-3">
                         <div class="w-5 h-5 flex items-center justify-center">
                             <svg class="text-[#0078D4] w-full h-full" fill="currentColor" viewBox="0 0 24 24">
@@ -1026,11 +136,11 @@
                         <span
                             class="text-sm font-medium text-muted-text group-hover:text-white transition-colors">Azure</span>
                     </div>
-                    <div id="status-dot-azure" class="h-1.5 w-1.5 rounded-full bg-slate-600"></div>
+                    <span
+                        class="text-[10px] text-muted-text border border-border-dark px-1.5 py-0.5 rounded">Paused</span>
                 </div>
-
-                <div id="status-row-gcp"
-                    class="px-3 py-2 flex items-center justify-between group cursor-pointer hover:bg-white/5 rounded-md opacity-60">
+                <div
+                    class="px-3 py-2 flex items-center justify-between group cursor-pointer hover:bg-white/5 rounded-md opacity-60 hover:opacity-100 transition-opacity">
                     <div class="flex items-center gap-3">
                         <div class="w-5 h-5 flex items-center justify-center">
                             <svg class="text-[#DB4437] w-full h-full" fill="currentColor" viewBox="0 0 24 24">
@@ -1044,14 +154,19 @@
                         <span
                             class="text-sm font-medium text-muted-text group-hover:text-white transition-colors">GCP</span>
                     </div>
-                    <div id="status-dot-gcp" class="h-1.5 w-1.5 rounded-full bg-slate-600"></div>
+                    <span class="text-[10px] text-muted-text border border-border-dark px-1.5 py-0.5 rounded">Off</span>
                 </div>
             </div>
             <div class="space-y-1 pt-4 border-t border-border-dark">
-                <a id="nav-settings"
-                    class="flex items-center gap-3 px-3 py-2 rounded-md text-muted-text hover:text-white hover:bg-white/5 transition-colors cursor-pointer">
+                <a class="flex items-center gap-3 px-3 py-2 rounded-md text-muted-text hover:text-white hover:bg-white/5 transition-colors"
+                    href="#">
                     <span class="material-symbols-outlined text-[18px]">settings</span>
                     <span class="text-sm font-medium">Settings</span>
+                </a>
+                <a class="flex items-center gap-3 px-3 py-2 rounded-md text-muted-text hover:text-white hover:bg-white/5 transition-colors"
+                    href="#">
+                    <span class="material-symbols-outlined text-[18px]">help</span>
+                    <span class="text-sm font-medium">Support</span>
                 </a>
             </div>
         </nav>
@@ -1062,8 +177,8 @@
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqS2PCfqFOZYGCQkQiddhdV2mnZCx-eHGXIL46mPkbDhHxUPcCPzJTy9fAvd6e2YCcCIw17_rs-sKKgeGxtIejVwXuNiNwNHQ3Z3Olw2XOZFSjOrQN6yfVOckpYxmJ-LOrx8EIgFe4dgl0gRUU-8zGHpPbJ1_PsRxwOl5IGo_QuiwOAj-CU36Mo04VzmtYyOh3Z2PBCuvnuJjhzzbfncklGvh_8LU9QhN3BrEq3FcUTJeSBnALLa5G4Qo6Zpju57nTJt6Pg15swSYn" />
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-xs font-semibold text-white">Admin User</span>
-                    <span class="text-[10px] text-muted-text">Cloud Admin</span>
+                    <span class="text-xs font-semibold text-white">John Doe</span>
+                    <span class="text-[10px] text-muted-text">DevOps Lead</span>
                 </div>
             </div>
         </div>
@@ -1076,19 +191,17 @@
                 <h2 class="text-2xl font-bold text-gradient tracking-tight">Cloud Command Center</h2>
             </div>
             <div class="flex items-center gap-6">
-                <!-- Anomaly Alert (Hidden by default) -->
-                <div id="header-anomaly" style="display:none"
-                    class="items-center gap-3 rounded-full border border-amber-500/20 bg-amber-500/5 px-4 py-1.5 backdrop-blur-sm shadow-[0_0_15px_rgba(245,158,11,0.05)]">
+                <div
+                    class="hidden md:flex items-center gap-3 rounded-full border border-amber-500/20 bg-amber-500/5 px-4 py-1.5 backdrop-blur-sm shadow-[0_0_15px_rgba(245,158,11,0.05)]">
                     <span class="material-symbols-outlined text-amber-500 text-[18px] animate-pulse">warning</span>
                     <div class="flex flex-col">
                         <span
                             class="text-[11px] font-bold text-amber-500 uppercase tracking-widest leading-none">Anomaly
                             Detected</span>
-                        <span id="header-anomaly-text" class="text-[10px] text-amber-400/80 leading-none mt-0.5">Spike
-                            detected</span>
+                        <span class="text-[10px] text-amber-400/80 leading-none mt-0.5">Spike in EC2 us-east-1</span>
                     </div>
                 </div>
-                <div id="time-filters"
+                <div
                     class="hidden sm:flex items-center gap-px rounded-lg border border-border-dark bg-card-dark p-1 shadow-sm">
                     <button
                         class="px-3 py-1.5 text-xs font-medium text-muted-text hover:text-white transition-colors">1D</button>
@@ -1096,12 +209,21 @@
                         class="px-3 py-1.5 text-xs font-medium text-muted-text hover:text-white transition-colors">7D</button>
                     <button
                         class="bg-white/10 rounded-md px-3 py-1.5 text-xs font-medium text-white shadow-sm ring-1 ring-white/10">30D</button>
+                    <div class="w-px h-4 bg-border-dark mx-1"></div>
+                    <button
+                        class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-muted-text hover:text-white transition-colors">
+                        <span>Sep 20 - Oct 20</span>
+                        <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                    </button>
                 </div>
+                <button
+                    class="group relative flex h-9 w-9 items-center justify-center rounded-lg border border-border-dark bg-card-dark text-muted-text transition-all hover:border-primary/50 hover:text-primary">
+                    <span class="material-symbols-outlined text-[20px]">search</span>
+                </button>
             </div>
         </header>
         <div class="p-8 max-w-[1600px] mx-auto space-y-8">
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                <!-- Total Spend -->
                 <div
                     class="relative overflow-hidden rounded-xl border border-border-dark bg-card-dark p-6 shadow-sm hover:shadow-glow transition-all duration-300 group">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -1109,16 +231,17 @@
                     </div>
                     <p class="text-xs font-medium text-muted-text uppercase tracking-wider">Total Spend (MTD)</p>
                     <div class="mt-4 flex items-baseline gap-2">
-                        <h3 id="kpi-total" class="text-3xl font-bold text-white tracking-tight">--</h3>
+                        <h3 class="text-3xl font-bold text-white tracking-tight">$12,450</h3>
+                        <span class="text-sm font-medium text-muted-text">.00</span>
                     </div>
                     <div class="mt-4 flex items-center gap-2">
                         <span
                             class="flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[11px] font-medium text-emerald-400 border border-emerald-500/20">
-                            <span class="material-symbols-outlined text-[12px]">calendar_today</span> Current Mo
+                            <span class="material-symbols-outlined text-[12px]">trending_up</span> 12%
                         </span>
+                        <span class="text-[11px] text-muted-text">vs prev. month</span>
                     </div>
                 </div>
-                <!-- Forecast -->
                 <div
                     class="relative overflow-hidden rounded-xl border border-border-dark bg-card-dark p-6 shadow-sm hover:shadow-glow transition-all duration-300 group">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -1126,35 +249,34 @@
                     </div>
                     <p class="text-xs font-medium text-muted-text uppercase tracking-wider">Forecasted Spend</p>
                     <div class="mt-4 flex items-baseline gap-2">
-                        <h3 id="kpi-forecast" class="text-3xl font-bold text-white tracking-tight">--</h3>
+                        <h3 class="text-3xl font-bold text-white tracking-tight">$14,200</h3>
+                        <span class="text-sm font-medium text-muted-text">.00</span>
                     </div>
                     <div class="mt-4 flex items-center gap-2">
                         <span
                             class="flex items-center gap-1 rounded bg-indigo-500/10 px-1.5 py-0.5 text-[11px] font-medium text-indigo-400 border border-indigo-500/20">
-                            End of Month
+                            +5% projected
                         </span>
+                        <span class="text-[11px] text-muted-text">variance</span>
                     </div>
                 </div>
-                <!-- Budget -->
                 <div
                     class="relative overflow-hidden rounded-xl border border-border-dark bg-card-dark p-6 shadow-sm hover:shadow-glow transition-all duration-300 group flex justify-between items-center">
                     <div>
                         <p class="text-xs font-medium text-muted-text uppercase tracking-wider">Budget Used</p>
                         <div class="mt-4 flex items-baseline gap-2">
-                            <h3 id="kpi-budget-pct" class="text-3xl font-bold text-white tracking-tight">--%</h3>
+                            <h3 class="text-3xl font-bold text-white tracking-tight">87%</h3>
                         </div>
-                        <p id="kpi-budget-rem" class="mt-4 text-[11px] text-muted-text">-- remaining</p>
+                        <p class="mt-4 text-[11px] text-muted-text">$1,750 remaining</p>
                     </div>
                     <div class="relative h-16 w-16">
                         <svg class="h-full w-full -rotate-90" viewBox="0 0 36 36">
                             <path class="text-slate-800"
                                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                                 fill="none" stroke="currentColor" stroke-width="3"></path>
-                            <!-- Dynamic Dash Array controlled by JS. Circumference ~100 -->
-                            <path id="gauge-path-fill"
-                                class="text-primary drop-shadow-[0_0_8px_rgba(94,106,210,0.5)] transition-all duration-1000"
+                            <path class="text-primary drop-shadow-[0_0_8px_rgba(94,106,210,0.5)]"
                                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                                fill="none" stroke="currentColor" stroke-dasharray="0, 100" stroke-linecap="round"
+                                fill="none" stroke="currentColor" stroke-dasharray="87, 100" stroke-linecap="round"
                                 stroke-width="3"></path>
                         </svg>
                         <div class="absolute inset-0 flex items-center justify-center">
@@ -1162,7 +284,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- System Status -->
                 <div
                     class="relative overflow-hidden rounded-xl border border-border-dark bg-card-dark p-6 shadow-sm hover:shadow-glow transition-all duration-300 group">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -1170,17 +291,18 @@
                     </div>
                     <p class="text-xs font-medium text-muted-text uppercase tracking-wider">System Status</p>
                     <div class="mt-4 flex items-center gap-2">
-                        <h3 id="kpi-status-main" class="text-3xl font-bold text-white tracking-tight">--</h3>
+                        <h3 class="text-3xl font-bold text-white tracking-tight">Active</h3>
                     </div>
                     <div class="mt-4 flex items-center gap-2">
                         <span
-                            class="flex items-center gap-1 rounded bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-500 border border-amber-500/20">
-                            <span id="kpi-status-sub" class="text-[10px]">-- Alert</span>
+                            class="flex items-center gap-1 rounded bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-500 border border-amber-500/20 animate-pulse">
+                            <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+                            1 Alert
                         </span>
+                        <span class="text-[11px] text-muted-text">Last scan: Now</span>
                     </div>
                 </div>
             </div>
-            <!-- Charts Row -->
             <div class="grid grid-cols-12 gap-6">
                 <div
                     class="col-span-12 rounded-xl border border-border-dark bg-card-dark p-6 shadow-sm relative overflow-hidden">
@@ -1189,12 +311,96 @@
                             <h3 class="text-lg font-semibold text-white">Cost Trend Analysis</h3>
                             <p class="text-sm text-muted-text mt-1">Multi-cloud expenditure forecast vs actual usage</p>
                         </div>
+                        <div class="flex items-center gap-2 bg-[#0B0E14] rounded-lg p-1 border border-border-dark">
+                            <div
+                                class="flex items-center px-3 py-1 bg-white/10 rounded border border-white/5 cursor-default">
+                                <span class="w-2 h-2 rounded-full bg-[#FF9900] mr-2"></span>
+                                <span class="text-xs font-medium text-white">AWS</span>
+                            </div>
+                            <div
+                                class="flex items-center px-3 py-1 cursor-pointer hover:bg-white/5 rounded transition-colors">
+                                <span class="w-2 h-2 rounded-full bg-[#0078D4] mr-2"></span>
+                                <span class="text-xs font-medium text-muted-text">Azure</span>
+                            </div>
+                            <div
+                                class="flex items-center px-3 py-1 cursor-pointer hover:bg-white/5 rounded transition-colors">
+                                <span class="w-2 h-2 rounded-full bg-[#DB4437] mr-2"></span>
+                                <span class="text-xs font-medium text-muted-text">GCP</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="relative h-80 w-full" id="chart-container">
-                        <canvas id="trendChart"></canvas>
+                    <div class="relative h-80 w-full">
+                        <div
+                            class="absolute inset-0 flex flex-col justify-between pointer-events-none text-xs text-muted-text/30 font-mono">
+                            <div class="w-full border-b border-dashed border-border-dark/50 flex items-end">
+                                <span>$2000</span></div>
+                            <div class="w-full border-b border-dashed border-border-dark/50 flex items-end">
+                                <span>$1500</span></div>
+                            <div class="w-full border-b border-dashed border-border-dark/50 flex items-end">
+                                <span>$1000</span></div>
+                            <div class="w-full border-b border-dashed border-border-dark/50 flex items-end">
+                                <span>$500</span></div>
+                            <div class="w-full border-b border-dashed border-border-dark/50 flex items-end">
+                                <span>$0</span></div>
+                        </div>
+                        <svg class="h-full w-full overflow-visible absolute inset-0" preserveAspectRatio="none"
+                            viewBox="0 0 1000 320">
+                            <defs>
+                                <linearGradient id="gradAWS" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="#FF9900" stop-opacity="0.2"></stop>
+                                    <stop offset="100%" stop-color="#FF9900" stop-opacity="0"></stop>
+                                </linearGradient>
+                                <linearGradient id="gradAzure" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="#0078D4" stop-opacity="0.1"></stop>
+                                    <stop offset="100%" stop-color="#0078D4" stop-opacity="0"></stop>
+                                </linearGradient>
+                            </defs>
+                            <path
+                                d="M0,280 C150,270 250,290 350,240 S550,220 650,230 S750,200 850,210 S950,250 1000,240 V320 H0 Z"
+                                fill="url(#gradAzure)"></path>
+                            <path class=""
+                                d="M0,280 C150,270 250,290 350,240 S550,220 650,230 S750,200 850,210 S950,250 1000,240"
+                                fill="none" stroke="#0078D4" stroke-opacity="0.5" stroke-width="2"></path>
+                            <path
+                                d="M0,250 C100,240 150,260 250,210 S350,180 450,190 S550,130 650,140 S750,110 850,120 S950,80 1000,90 V320 H0 Z"
+                                fill="url(#gradAWS)"></path>
+                            <path class="drop-shadow-[0_0_10px_rgba(255,153,0,0.4)]"
+                                d="M0,250 C100,240 150,260 250,210 S350,180 450,190 S550,130 650,140 S750,110 850,120 S950,80 1000,90"
+                                fill="none" stroke="#FF9900" stroke-linecap="round" stroke-width="3"></path>
+                            <path d="M0,300 C120,290 200,310 350,280 S500,270 650,280 S800,260 1000,270" fill="none"
+                                stroke="#DB4437" stroke-dasharray="5,5" stroke-opacity="0.3" stroke-width="2"></path>
+                            <circle class="cursor-pointer hover:scale-150 transition-transform duration-200" cx="650"
+                                cy="140" fill="#0B0E14" r="6" stroke="#FF9900" stroke-width="3"></circle>
+                        </svg>
+                        <div
+                            class="absolute left-[65%] top-[35%] -translate-x-1/2 -translate-y-full mb-3 rounded-lg border border-border-dark bg-[#0B0E14]/90 p-3 shadow-xl backdrop-blur-md z-10 w-48">
+                            <div class="flex justify-between items-center mb-2 border-b border-white/10 pb-2">
+                                <span class="text-[10px] text-muted-text font-semibold uppercase">Sep 24, 2023</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs text-muted-text flex items-center gap-1"><span
+                                        class="w-1.5 h-1.5 rounded-full bg-[#FF9900]"></span> AWS</span>
+                                <span class="text-sm font-bold text-white">$845.20</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-muted-text flex items-center gap-1"><span
+                                        class="w-1.5 h-1.5 rounded-full bg-[#0078D4]"></span> Azure</span>
+                                <span class="text-sm font-medium text-muted-text">$210.50</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="mt-4 flex justify-between px-2 text-[10px] font-medium text-muted-text uppercase tracking-widest opacity-60">
+                        <span>Sep 12</span>
+                        <span>Sep 14</span>
+                        <span>Sep 16</span>
+                        <span>Sep 18</span>
+                        <span>Sep 20</span>
+                        <span>Sep 22</span>
+                        <span>Sep 24</span>
+                        <span>Sep 26</span>
                     </div>
                 </div>
-
                 <div
                     class="col-span-12 lg:col-span-4 rounded-xl border border-border-dark bg-card-dark p-6 shadow-sm flex flex-col justify-between">
                     <h3 class="text-lg font-semibold text-white mb-2">Provider Distribution</h3>
@@ -1203,53 +409,119 @@
                             <svg class="h-full w-full rotate-[-90deg]" viewBox="0 0 36 36">
                                 <circle cx="18" cy="18" fill="none" r="15.915" stroke="#1F2430" stroke-width="3">
                                 </circle>
-                                <!-- AWS -->
-                                <circle id="donut-path-aws" class="transition-all duration-1000" cx="18" cy="18"
-                                    fill="none" r="15.915" stroke="#FF9900" stroke-dasharray="0 100" stroke-width="3">
-                                </circle>
-                                <!-- Azure -->
-                                <circle id="donut-path-azure" class="transition-all duration-1000" cx="18" cy="18"
-                                    fill="none" r="15.915" stroke="#0078D4" stroke-dasharray="0 100"
-                                    stroke-dashoffset="0" stroke-width="3"></circle>
-                                <!-- GCP -->
-                                <circle id="donut-path-gcp" class="transition-all duration-1000" cx="18" cy="18"
-                                    fill="none" r="15.915" stroke="#DB4437" stroke-dasharray="0 100"
-                                    stroke-dashoffset="0" stroke-width="3"></circle>
+                                <circle class="transition-all hover:stroke-[#FF9900]" cx="18" cy="18" fill="none"
+                                    r="15.915" stroke="#FF9900" stroke-dasharray="70 30" stroke-width="3"></circle>
+                                <circle class="transition-all hover:stroke-[#0078D4]" cx="18" cy="18" fill="none"
+                                    r="15.915" stroke="#0078D4" stroke-dasharray="20 80" stroke-dashoffset="-70"
+                                    stroke-width="3"></circle>
+                                <circle class="transition-all hover:stroke-[#DB4437]" cx="18" cy="18" fill="none"
+                                    r="15.915" stroke="#DB4437" stroke-dasharray="10 90" stroke-dashoffset="-90"
+                                    stroke-width="3"></circle>
                             </svg>
                             <div class="absolute inset-0 flex flex-col items-center justify-center">
                                 <span class="text-xs text-muted-text uppercase tracking-wider font-medium">Total
                                     Spend</span>
-                                <span id="donut-total"
-                                    class="text-2xl font-bold text-white tracking-tight mt-1">--</span>
+                                <span class="text-2xl font-bold text-white tracking-tight mt-1">$12.4k</span>
                             </div>
                         </div>
                     </div>
                     <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-border-dark">
                         <div class="text-center">
                             <span class="block text-[10px] text-muted-text mb-1">AWS</span>
-                            <span id="donut-pct-aws" class="block text-sm font-bold text-white">--%</span>
+                            <span class="block text-sm font-bold text-white">70%</span>
                         </div>
                         <div class="text-center border-l border-border-dark">
                             <span class="block text-[10px] text-muted-text mb-1">Azure</span>
-                            <span id="donut-pct-azure" class="block text-sm font-bold text-white">--%</span>
+                            <span class="block text-sm font-bold text-white">20%</span>
                         </div>
                         <div class="text-center border-l border-border-dark">
                             <span class="block text-[10px] text-muted-text mb-1">GCP</span>
-                            <span id="donut-pct-gcp" class="block text-sm font-bold text-white">--%</span>
+                            <span class="block text-sm font-bold text-white">10%</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- Top Services List -->
                 <div class="col-span-12 lg:col-span-8 rounded-xl border border-border-dark bg-card-dark p-6 shadow-sm">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-lg font-semibold text-white">Top Services Breakdown</h3>
                         <button class="text-xs text-primary hover:text-white font-medium transition-colors">View
                             Report</button>
                     </div>
-                    <div class="space-y-6" id="services-list">
-                        <!-- Dynamic Content -->
-                        <div class="text-center text-muted-text text-sm py-4">Loading services...</div>
+                    <div class="space-y-6">
+                        <div class="group">
+                            <div class="flex justify-between items-center text-sm mb-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-1.5 rounded bg-[#FF9900]/10 text-[#FF9900]">
+                                        <span class="material-symbols-outlined text-[16px]">dns</span>
+                                    </div>
+                                    <span class="font-medium text-slate-200">Amazon EC2</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-bold text-white">$4,230.50</span>
+                                </div>
+                            </div>
+                            <div class="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
+                                <div
+                                    class="h-full rounded-full bg-[#FF9900] w-[65%] group-hover:brightness-110 transition-all duration-500 relative overflow-hidden">
+                                    <div
+                                        class="absolute inset-0 bg-white/20 -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="flex justify-between items-center text-sm mb-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-1.5 rounded bg-[#0078D4]/10 text-[#0078D4]">
+                                        <span class="material-symbols-outlined text-[16px]">database</span>
+                                    </div>
+                                    <span class="font-medium text-slate-200">Azure SQL Database</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-bold text-white">$2,105.00</span>
+                                </div>
+                            </div>
+                            <div class="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
+                                <div
+                                    class="h-full rounded-full bg-[#0078D4] w-[35%] group-hover:brightness-110 transition-all duration-500">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="flex justify-between items-center text-sm mb-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-1.5 rounded bg-[#FF9900]/10 text-[#FF9900]">
+                                        <span class="material-symbols-outlined text-[16px]">folder_open</span>
+                                    </div>
+                                    <span class="font-medium text-slate-200">Amazon S3</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-bold text-white">$1,450.25</span>
+                                </div>
+                            </div>
+                            <div class="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
+                                <div
+                                    class="h-full rounded-full bg-orange-400 w-[22%] group-hover:brightness-110 transition-all duration-500">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="flex justify-between items-center text-sm mb-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-1.5 rounded bg-[#DB4437]/10 text-[#DB4437]">
+                                        <span class="material-symbols-outlined text-[16px]">cloud_queue</span>
+                                    </div>
+                                    <span class="font-medium text-slate-200">Google Cloud Compute</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-bold text-white">$890.00</span>
+                                </div>
+                            </div>
+                            <div class="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
+                                <div
+                                    class="h-full rounded-full bg-[#DB4437] w-[14%] group-hover:brightness-110 transition-all duration-500">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

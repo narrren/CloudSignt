@@ -10,1080 +10,214 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
     rel="stylesheet" />
+  <!-- Local CSS replacing CDN -->
+  <link rel="stylesheet" href="styles.css">
   <style>
-    /* Tailwind-like Utility Classes for CloudSight Extension (Offline Safe) */
-    /* Reset */
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: 'Inter', system-ui, sans-serif;
-      background-color: #0B0E14;
-      color: #cbd5e1;
-    }
-
-    button {
-      cursor: pointer;
-      border: none;
-      background: none;
-      padding: 0;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    /* Colors */
-    :root {
-      --bg-dark: #0B0E14;
-      --bg-card: #151921;
-      --bg-slate-800: #1e293b;
-      --border-dark: #272B36;
-      --text-white: #ffffff;
-      --text-muted: #8A8F98;
-      --primary: #6366F1;
-      --emerald-500: #10b981;
-      --rose-500: #f43f5e;
-      --amber-500: #f59e0b;
-    }
-
-    /* Layout */
-    .flex {
-      display: flex;
-    }
-
-    .flex-col {
-      flex-direction: column;
-    }
-
-    .items-center {
-      align-items: center;
-    }
-
-    .items-baseline {
-      align-items: baseline;
-    }
-
-    .justify-between {
-      justify-content: space-between;
-    }
-
-    .justify-center {
-      justify-content: center;
-    }
-
-    .flex-1 {
-      flex: 1 1 0%;
-    }
-
-    .grid {
-      display: grid;
-    }
-
-    .grid-cols-1 {
-      grid-template-columns: repeat(1, minmax(0, 1fr));
-    }
-
-    .grid-cols-2 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .grid-cols-3 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .grid-cols-12 {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-    }
-
-    .gap-1 {
-      gap: 0.25rem;
-    }
-
-    .gap-2 {
-      gap: 0.5rem;
-    }
-
-    .gap-3 {
-      gap: 0.75rem;
-    }
-
-    .gap-4 {
-      gap: 1rem;
-    }
-
-    .gap-6 {
-      gap: 1.5rem;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .relative {
-      position: relative;
-    }
-
-    .absolute {
-      position: absolute;
-    }
-
-    .sticky {
-      position: sticky;
-    }
-
-    .top-0 {
-      top: 0;
-    }
-
-    .bottom-0 {
-      bottom: 0;
-    }
-
-    .right-0 {
-      right: 0;
-    }
-
-    .left-0 {
-      left: 0;
-    }
-
-    .inset-0 {
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-    }
-
-    .-top-0\.5 {
-      top: -0.125rem;
-    }
-
-    .-right-0\.5 {
-      right: -0.125rem;
-    }
-
-    .z-10 {
-      z-index: 10;
-    }
-
-    .z-20 {
-      z-index: 20;
-    }
-
-    .z-\[-1\] {
-      z-index: -1;
-    }
-
-    .pointer-events-none {
-      pointer-events: none;
-    }
-
-    /* Sizing */
-    .w-full {
-      width: 100%;
-    }
-
-    .h-full {
-      height: 100%;
-    }
-
-    .h-screen {
-      height: 100vh;
-    }
-
-    .w-[350px] {
-      width: 350px;
-    }
-
-    .h-[550px] {
-      height: 550px;
-    }
-
-    .w-64 {
-      width: 16rem;
-    }
-
-    .size-4 {
-      width: 1rem;
-      height: 1rem;
-    }
-
-    .size-6 {
-      width: 1.5rem;
-      height: 1.5rem;
-    }
-
-    .w-1 {
-      width: 0.25rem;
-    }
-
-    .w-2 {
-      width: 0.5rem;
-    }
-
-    .h-2 {
-      height: 0.5rem;
-    }
-
-    .w-2\.5 {
-      width: 0.625rem;
-    }
-
-    .h-2\.5 {
-      height: 0.625rem;
-    }
-
-    .w-4 {
-      width: 1rem;
-    }
-
-    .h-4 {
-      height: 1rem;
-    }
-
-    .w-5 {
-      width: 1.25rem;
-    }
-
-    .h-5 {
-      height: 1.25rem;
-    }
-
-    .w-6 {
-      width: 1.5rem;
-    }
-
-    .h-6 {
-      height: 1.5rem;
-    }
-
-    .w-8 {
-      width: 2rem;
-    }
-
-    .h-8 {
-      height: 2rem;
-    }
-
-    .h-16 {
-      height: 4rem;
-    }
-
-    .w-16 {
-      width: 4rem;
-    }
-
-    .h-20 {
-      height: 5rem;
-    }
-
-    .h-28 {
-      height: 7rem;
-    }
-
-    .h-48 {
-      height: 12rem;
-    }
-
-    .w-48 {
-      width: 12rem;
-    }
-
-    .h-80 {
-      height: 20rem;
-    }
-
-    /* Spacing */
-    .p-1 {
-      padding: 0.25rem;
-    }
-
-    .p-3 {
-      padding: 0.75rem;
-    }
-
-    .p-4 {
-      padding: 1rem;
-    }
-
-    .p-5 {
-      padding: 1.25rem;
-    }
-
-    .p-6 {
-      padding: 1.5rem;
-    }
-
-    .p-8 {
-      padding: 2rem;
-    }
-
-    .px-1\.5 {
-      padding-left: 0.375rem;
-      padding-right: 0.375rem;
-    }
-
-    .py-0\.5 {
-      padding-top: 0.125rem;
-      padding-bottom: 0.125rem;
-    }
-
-    .py-2\.5 {
-      padding-top: 0.625rem;
-      padding-bottom: 0.625rem;
-    }
-
-    .px-1 {
-      padding-left: 0.25rem;
-      padding-right: 0.25rem;
-    }
-
-    .px-3 {
-      padding-left: 0.75rem;
-      padding-right: 0.75rem;
-    }
-
-    .px-4 {
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
-
-    .px-5 {
-      padding-left: 1.25rem;
-      padding-right: 1.25rem;
-    }
-
-    .py-1 {
-      padding-top: 0.25rem;
-      padding-bottom: 0.25rem;
-    }
-
-    .py-2 {
-      padding-top: 0.5rem;
-      padding-bottom: 0.5rem;
-    }
-
-    .py-3 {
-      padding-top: 0.75rem;
-      padding-bottom: 0.75rem;
-    }
-
-    .mt-0\.5 {
-      margin-top: 0.125rem;
-    }
-
-    .mt-1 {
-      margin-top: 0.25rem;
-    }
-
-    .mt-2 {
-      margin-top: 0.5rem;
-    }
-
-    .mt-3 {
-      margin-top: 0.75rem;
-    }
-
-    .mt-4 {
-      margin-top: 1rem;
-    }
-
-    .mb-1 {
-      margin-bottom: 0.25rem;
-    }
-
-    .mb-2 {
-      margin-bottom: 0.5rem;
-    }
-
-    .mb-6 {
-      margin-bottom: 1.5rem;
-    }
-
-    .mb-8 {
-      margin-bottom: 2rem;
-    }
-
-    .mx-auto {
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* Typography */
-    .text-xs {
-      font-size: 0.75rem;
-    }
-
-    .text-sm {
-      font-size: 0.875rem;
-    }
-
-    .text-lg {
-      font-size: 1.125rem;
-    }
-
-    .text-xl {
-      font-size: 1.25rem;
-    }
-
-    .text-2xl {
-      font-size: 1.5rem;
-    }
-
-    .text-3xl {
-      font-size: 1.875rem;
-    }
-
-    .text-5xl {
-      font-size: 3rem;
-    }
-
-    .text-6xl {
-      font-size: 3.75rem;
-    }
-
-    .text-\[9px\] {
-      font-size: 9px;
-    }
-
-    .text-\[10px\] {
-      font-size: 10px;
-    }
-
-    .text-\[11px\] {
-      font-size: 11px;
-    }
-
-    .text-\[12px\] {
-      font-size: 12px;
-    }
-
-    .text-\[16px\] {
-      font-size: 16px;
-    }
-
-    .text-\[18px\] {
-      font-size: 18px;
-    }
-
-    .text-\[32px\] {
-      font-size: 32px;
-    }
-
-    .text-\[40px\] {
-      font-size: 40px;
-    }
-
-    .font-medium {
-      font-weight: 500;
-    }
-
-    .font-bold {
-      font-weight: 700;
-    }
-
-    .font-semibold {
-      font-weight: 600;
-    }
-
-    .uppercase {
-      text-transform: uppercase;
-    }
-
-    .tracking-tight {
-      letter-spacing: -0.025em;
-    }
-
-    .tracking-wide {
-      letter-spacing: 0.025em;
-    }
-
-    .tracking-wider {
-      letter-spacing: 0.05em;
-    }
-
-    .tracking-widest {
-      letter-spacing: 0.1em;
-    }
-
-    .truncate {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .leading-none {
-      line-height: 1;
-    }
-
-    .text-white {
-      color: #fff;
-    }
-
-    .text-slate-100 {
-      color: #f1f5f9;
-    }
-
-    .text-slate-200 {
-      color: #e2e8f0;
-    }
-
-    .text-slate-300 {
-      color: #cbd5e1;
-    }
-
-    .text-slate-400 {
-      color: #94a3b8;
-    }
-
-    .text-slate-500 {
-      color: #64748b;
-    }
-
-    .text-muted-text {
-      color: #8A8F98;
-    }
-
-    .text-primary {
-      color: #6366F1;
-    }
-
-    .text-emerald-400 {
-      color: #34d399;
-    }
-
-    .text-emerald-500 {
-      color: #10b981;
-    }
-
-    .text-rose-400 {
-      color: #fb7185;
-    }
-
-    .text-rose-500 {
-      color: #f43f5e;
-    }
-
-    .text-amber-500 {
-      color: #f59e0b;
-    }
-
-    .text-indigo-400 {
-      color: #818cf8;
-    }
-
-    .text-indigo-500 {
-      color: #6366f1;
-    }
-
-    .text-\[\#FF9900\] {
-      color: #FF9900;
-    }
-
-    .text-\[\#0078D4\] {
-      color: #0078D4;
-    }
-
-    .text-\[\#DB4437\] {
-      color: #DB4437;
-    }
-
-    /* Backgrounds/Borders */
-    .bg-white\/5 {
-      background-color: rgba(255, 255, 255, 0.05);
-    }
-
-    .bg-white\/10 {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .bg-slate-800 {
-      background-color: #1e293b;
-    }
-
-    .bg-slate-800\/40 {
-      background-color: rgba(30, 41, 59, 0.4);
-    }
-
-    .bg-slate-900 {
-      background-color: #0f172a;
-    }
-
-    .bg-\[\#0F172A\] {
-      background-color: #0F172A;
-    }
-
-    .bg-\[\#0B0E14\] {
-      background-color: #0B0E14;
-    }
-
-    .bg-\[\#0B0E14\]\/80 {
-      background-color: rgba(11, 14, 20, 0.8);
-    }
-
-    .bg-\[\#0B0E14\]\/95 {
-      background-color: rgba(11, 14, 20, 0.95);
-    }
-
-    .bg-\[\#0e121a\] {
-      background-color: #0e121a;
-    }
-
-    .bg-\[\#151921\]\/90 {
-      background-color: rgba(21, 25, 33, 0.9);
-    }
-
-    .bg-background-dark {
-      background-color: #0B0E14;
-    }
-
-    .bg-background-dark\/50 {
-      background-color: rgba(11, 14, 20, 0.5);
-    }
-
-    .bg-card-dark {
-      background-color: #151921;
-    }
-
-    .bg-indigo-500\/10 {
-      background-color: rgba(99, 102, 241, 0.1);
-    }
-
-    .bg-primary\/10 {
-      background-color: rgba(99, 102, 241, 0.1);
-    }
-
-    .bg-primary\/20 {
-      background-color: rgba(99, 102, 241, 0.2);
-    }
-
-    .bg-emerald-500\/10 {
-      background-color: rgba(16, 185, 129, 0.1);
-    }
-
-    .bg-amber-500\/5 {
-      background-color: rgba(245, 158, 11, 0.05);
-    }
-
-    .bg-rose-500 {
-      background-color: #f43f5e;
-    }
-
-    .bg-rose-500\/10 {
-      background-color: rgba(244, 63, 94, 0.1);
-    }
-
-    .bg-gradient-to-br {
-      background-image: linear-gradient(to bottom right, var(--tw-gradient-from), var(--tw-gradient-to));
-    }
-
-    .bg-gradient-to-tr {
-      background-image: linear-gradient(to top right, var(--tw-gradient-from), var(--tw-gradient-to));
-    }
-
-    .bg-gradient-to-r {
-      background-image: linear-gradient(to right, var(--tw-gradient-from), var(--tw-gradient-to));
-    }
-
-    .bg-gradient-to-b {
-      background-image: linear-gradient(to bottom, var(--tw-gradient-from), var(--tw-gradient-to));
-    }
-
-    .from-primary {
-      --tw-gradient-from: #6366F1;
-      --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-    }
-
-    .to-indigo-600 {
-      --tw-gradient-to: #4f46e5;
-    }
-
-    .to-purple-400 {
-      --tw-gradient-to: #c084fc;
-    }
-
-    .from-slate-900 {
-      --tw-gradient-from: #0f172a;
-      --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-    }
-
-    .to-slate-800 {
-      --tw-gradient-to: #1e293b;
-    }
-
-    .from-rose-500 {
-      --tw-gradient-from: #f43f5e;
-      --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-    }
-
-    .to-orange-500 {
-      --tw-gradient-to: #f97316;
-    }
-
-    .border {
-      border-width: 1px;
-      border-style: solid;
-    }
-
-    .border-b {
-      border-bottom-width: 1px;
-      border-bottom-style: solid;
-    }
-
-    .border-t {
-      border-top-width: 1px;
-      border-top-style: solid;
-    }
-
-    .border-r {
-      border-right-width: 1px;
-      border-right-style: solid;
-    }
-
-    .border-slate-800 {
-      border-color: #1e293b;
-    }
-
-    .border-slate-800\/40 {
-      border-color: rgba(30, 41, 59, 0.4);
-    }
-
-    .border-card-border {
-      border-color: #272B36;
-    }
-
-    .border-border-dark {
-      border-color: #272B36;
-    }
-
-    .border-white\/5 {
-      border-color: rgba(255, 255, 255, 0.05);
-    }
-
-    .border-indigo-500\/20 {
-      border-color: rgba(99, 102, 241, 0.2);
-    }
-
-    .border-amber-500\/20 {
-      border-color: rgba(245, 158, 11, 0.2);
-    }
-
-    .border-emerald-500\/20 {
-      border-color: rgba(16, 185, 129, 0.2);
-    }
-
-    .border-rose-500\/20 {
-      border-color: rgba(244, 63, 94, 0.2);
-    }
-
-    .border-primary\/20 {
-      border-color: rgba(99, 102, 241, 0.2);
-    }
-
-    /* Misc */
-    .rounded {
-      border-radius: 0.25rem;
-    }
-
-    .rounded-md {
-      border-radius: 0.375rem;
-    }
-
-    .rounded-lg {
-      border-radius: 0.5rem;
-    }
-
-    .rounded-xl {
-      border-radius: 0.75rem;
-    }
-
-    .rounded-\[10px\] {
-      border-radius: 10px;
-    }
-
-    .rounded-full {
-      border-radius: 9999px;
-    }
-
-    .shadow-glow {
-      box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
-    }
-
-    .shadow-sm {
-      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    }
-
-    .backdrop-blur {
-      backdrop-filter: blur(8px);
-    }
-
-    .backdrop-blur-sm {
-      backdrop-filter: blur(4px);
-    }
-
-    .backdrop-blur-xl {
-      backdrop-filter: blur(24px);
-    }
-
-    .opacity-10 {
-      opacity: 0.1;
-    }
-
-    .opacity-20 {
-      opacity: 0.2;
-    }
-
-    .opacity-30 {
-      opacity: 0.3;
-    }
-
-    .opacity-40 {
-      opacity: 0.4;
-    }
-
-    .opacity-60 {
-      opacity: 0.6;
-    }
-
-    .opacity-100 {
-      opacity: 1;
-    }
-
-    .grayscale {
-      filter: grayscale(100%);
-    }
-
-    .transition-all {
-      transition: all 150ms;
-    }
-
-    .transition-transform {
-      transition-property: transform;
-      transition-duration: 150ms;
-    }
-
-    .transition-colors {
-      transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-      transition-duration: 150ms;
-    }
-
-    .transition-opacity {
-      transition-property: opacity;
-      transition-duration: 150ms;
-    }
-
-    .duration-300 {
-      transition-duration: 300ms;
-    }
-
-    .duration-1000 {
-      transition-duration: 1000ms;
-    }
-
-    .cursor-pointer {
-      cursor: pointer;
-    }
-
-    .animate-pulse {
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      50% {
-        opacity: .5;
-      }
-    }
-
-    .overflow-hidden {
-      overflow: hidden;
-    }
-
-    .overflow-y-auto {
-      overflow-y: auto;
-    }
-
-    .group:hover .group-hover\:opacity-20 {
-      opacity: 0.2;
-    }
-
-    .group:hover .group-hover\:opacity-30 {
-      opacity: 0.3;
-    }
-
-    .group:hover .group-hover\:scale-110 {
-      transform: scale(1.1);
-    }
-
-    .group:hover .group-hover\:text-white {
-      color: #fff;
-    }
-
     ::-webkit-scrollbar {
       width: 4px;
     }
 
     ::-webkit-scrollbar-track {
-      background: #0B0E14;
+      background: #0F172A;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: #272B36;
-      border-radius: 2px;
+      background: #334155;
+      border-radius: 4px;
     }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: #3F4451;
+    body {
+      /* display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #000; margin: 0; padding: 20px; font-family: 'Inter', sans-serif; */
+      /* Adjusted for Extension Popup limitation (no padding around body ideally) */
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #0F172A;
     }
 
-    .glass-panel {
-      background: rgba(21, 25, 33, 0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+    .extension-popup {
+      width: 380px;
+      height: 600px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      /* box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); */
+      /* Shadow useless in popup window */
     }
 
     .text-glow {
-      text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .font-display {
+      font-family: 'Inter', sans-serif;
     }
   </style>
 </head>
 
-<body
-  style="width: 350px; height: 550px; display: flex; flex-direction: column; overflow: hidden; background-color: #0B0E14; color: #fff;"
-  class="bg-background-dark text-slate-100 antialiased selection:bg-primary/30 selection:text-white w-[350px] h-[550px] flex flex-col overflow-hidden border border-slate-800/40 relative">
-  <!-- Subtle Grid Background -->
-  <div class="absolute inset-0 z-[-1] opacity-40 pointer-events-none"
-    style="background-image: radial-gradient(#272B36 1px, transparent 1px); background-size: 20px 20px;"></div>
-
-  <!-- Header -->
-  <header
-    class="flex items-center justify-between px-5 py-3 border-b border-white/5 bg-[#0B0E14]/80 backdrop-blur-sm sticky top-0 z-20">
-    <div class="flex items-center gap-2">
-      <div
-        class="flex h-6 w-6 items-center justify-center rounded bg-gradient-to-br from-primary to-indigo-600 shadow-glow">
-        <span class="material-symbols-outlined text-white text-[16px]">cloud</span>
-      </div>
-      <span class="text-sm font-semibold tracking-wide text-white">CloudSight</span>
-    </div>
-    <div class="flex items-center gap-3">
-      <!-- Status Badges for Providers -->
-      <div class="flex items-center gap-1">
-        <!-- AWS -->
-        <div id="badge-aws"
-          class="h-4 w-4 rounded-full bg-slate-800 flex items-center justify-center grayscale opacity-40 transition-all duration-300"
-          title="AWS">
-          <svg class="w-2.5 h-2.5 text-[#FF9900]" fill="currentColor" viewBox="0 0 24 24">
+<body style="width: 380px; height: 600px; overflow: hidden; margin: 0; background-color: #0F172A;"
+  class="font-display text-slate-200">
+  <div class="extension-popup bg-background-dark border border-slate-800 rounded-xl relative">
+    <header
+      class="flex items-center justify-between px-5 py-3 border-b border-card-border bg-[#0F172A]/95 backdrop-blur-sm sticky top-0 z-20">
+      <div class="flex items-center gap-2">
+        <div class="size-6 rounded bg-primary/20 flex items-center justify-center text-indigo-400">
+          <svg fill="none" height="14" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
             <path
-              d="M17.4 12.6c-.4 0-.8.1-1.1.2-.3.2-.6.4-.8.7-.2.3-.4.6-.5 1-.1.4-.1.8-.1 1.2s0 .8.1 1.2c.1.4.3.7.5 1 .2.3.5.5.8.7.3.2.7.2 1.1.2.4 0 .8-.1 1.1-.2.3-.2.6-.4.8-.7.2-.3.4-.6.5-1 .1-.4.1-.8.1-1.2s0-.8-.1-1.2c-.1-.4-.3-.7-.5-1-.2-.3-.5-.5-.8-.7-.3-.2-.7-.3-1.1-.3zm-4.7 0c-.4 0-.8.1-1.1.2-.3.2-.6.4-.8.7-.2.3-.4.6-.5 1-.1.4-.1.8-.1 1.2s0 .8.1 1.2c.1.4.3.7.5 1 .2.3.5.5.8.7.3.2.7.2 1.1.2.4 0 .8-.1 1.1-.2.3-.2.6-.4.8-.7.2-.3.4-.6.5-1 .1-.4.1-.8.1-1.2s0-.8-.1-1.2c-.1-.4-.3-.7-.5-1-.2-.3-.5-.5-.8-.7-.3-.2-.7-.3-1.1-.3zm-9.5 0c-.4 0-.8.1-1.1.2-.3.2-.6.4-.8.7-.2.3-.4.6-.5 1-.1.4-.1.8-.1 1.2s0 .8.1 1.2c.1.4.3.7.5 1 .2.3.5.5.8.7.3.2.7.2 1.1.2.4 0 .8-.1 1.1-.2.3-.2.6-.4.8-.7.2-.3.4-.6.5-1 .1-.4.1-.8.1-1.2s0-.8-.1-1.2c-.1-.4-.3-.7-.5-1-.2-.3-.5-.5-.8-.7-.3-.2-.7-.3-1.1-.3zm15.1-4c-.7-.9-1.5-1.5-2.6-2s-2.3-.7-3.7-.7c-1.4 0-2.6.2-3.7.7-1.1.5-1.9 1.1-2.6 2l1.1 1.6c.5-.7 1.2-1.2 2-1.5 1-.4 2.1-.6 3.2-.6s2.3.2 3.2.6c.9.4 1.5.9 2 1.5l1.1-1.6z">
+              d="M19 5H5C3.89543 5 3 5.89543 3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V7C21 5.89543 20.1046 5 19 5Z"
+              stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+            <path d="M7 12L12 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
             </path>
           </svg>
         </div>
-        <!-- Azure -->
-        <div id="badge-azure"
-          class="h-4 w-4 rounded-full bg-slate-800 flex items-center justify-center grayscale opacity-40 transition-all duration-300"
-          title="Azure">
-          <svg class="w-2.5 h-2.5 text-[#0078D4]" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M5.4 20l3.1-9.3 5.4 9.3H5.4zm-1.8-1l7.8-14h1.7l-4.2 14H3.6zm10.2 1l5.8-9.8h-4.6l-3.3 5.6 2.1 4.2z">
-            </path>
-          </svg>
-        </div>
-        <!-- GCP -->
-        <div id="badge-gcp"
-          class="h-4 w-4 rounded-full bg-slate-800 flex items-center justify-center grayscale opacity-40 transition-all duration-300"
-          title="GCP">
-          <svg class="w-2.5 h-2.5 text-[#DB4437]" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 24c6.6 0 12-5.4 12-12S18.6 0 12 0 0 5.4 0 12s5.4 12 12 12z" fill="#fff" fill-opacity="0.1">
-            </path>
-            <path
-              d="M12.3 10.3v3.4h4.8c-.2 1.2-1.4 3.5-4.8 3.5-2.9 0-5.3-2.4-5.3-5.3s2.4-5.3 5.3-5.3c1.3 0 2.5.5 3.4 1.3l2.7-2.7C16.8 3.7 14.7 2.7 12.3 2.7 7 2.7 2.7 7 2.7 12.3s4.3 9.6 9.6 9.6c5.5 0 9.2-3.9 9.2-9.4 0-.8-.1-1.4-.2-2H12.3z">
-            </path>
-          </svg>
-        </div>
+        <span class="text-sm font-semibold text-white tracking-tight">CloudSight</span>
       </div>
-      <button id="btn-settings" class="text-slate-400 hover:text-white transition-colors">
-        <span class="material-symbols-outlined text-[18px]">settings</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <main class="flex-1 overflow-y-auto p-5 space-y-5">
-
-    <!-- Total Spend Card -->
-    <div class="relative overflow-hidden rounded-xl border border-white/5 bg-card-dark p-1 shadow-glow group">
-      <div class="absolute top-0 right-0 p-3 opacity-20 group-hover:opacity-30 transition-opacity">
-        <span class="material-symbols-outlined text-5xl text-primary">payments</span>
-      </div>
-      <div class="relative bg-[#151921]/90 backdrop-blur rounded-[10px] p-4 z-10">
-        <p class="text-[10px] font-semibold text-muted-text uppercase tracking-widest">Total Spend (MTD)</p>
-        <div class="flex items-baseline gap-1 mt-1">
-          <h2 id="total-spend" class="text-[32px] font-bold text-white text-glow tracking-tight leading-none">$0.00</h2>
-          <span id="currency-display" class="text-xs font-medium text-slate-500">USD</span>
-        </div>
-        <div class="mt-3 flex items-center justify-between">
-          <div class="flex flex-col">
-            <span class="text-[10px] text-slate-400">Forecast</span>
-            <p id="forecast-spend" class="text-xs font-semibold text-indigo-400">$0.00</p>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1.5 px-2 py-1 bg-slate-800/40 rounded border border-white/5">
+          <div class="size-4 grayscale-0 opacity-100 hover:opacity-80 transition-opacity cursor-pointer"
+            title="AWS Active">
+            <svg fill="#FF9900" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z"></path>
+              <path d="M2 17L12 22L22 17"></path>
+              <path d="M2 12L12 17L22 12"></path>
+            </svg>
           </div>
-          <div class="flex flex-col items-end">
-            <!-- Mini Chart Placeholder -->
-            <svg width="60" height="20" viewBox="0 0 60 20" fill="none">
-              <path d="M0 18C10 18 15 8 20 12C25 16 30 4 35 8C40 12 45 2 50 5C55 8 60 0 60 0" stroke="#6366F1"
-                stroke-width="2" stroke-opacity="0.5" />
+          <div class="size-4 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer"
+            title="Azure Inactive">
+            <svg fill="#0078D4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <rect height="9" width="9" x="2" y="2"></rect>
+              <rect height="9" width="9" x="13" y="2"></rect>
+              <rect height="9" width="9" x="2" y="13"></rect>
+              <rect height="9" width="9" x="13" y="13"></rect>
+            </svg>
+          </div>
+          <div class="size-4 grayscale-0 opacity-100 hover:opacity-80 transition-opacity cursor-pointer"
+            title="GCP Active">
+            <svg fill="#4285F4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10"></circle>
             </svg>
           </div>
         </div>
+        <div class="h-4 w-px bg-slate-700"></div>
+        <button
+          class="text-[11px] font-medium text-slate-400 hover:text-white transition-colors flex items-center gap-0.5">
+          USD
+          <span class="material-symbols-outlined text-[14px]">expand_more</span>
+        </button>
+        <button class="text-slate-400 hover:text-white transition-colors">
+          <span class="material-symbols-outlined text-[18px]">settings</span>
+        </button>
       </div>
-    </div>
-
-    <!-- Active Services List -->
-    <div>
-      <div class="flex items-center justify-between mb-2 px-1">
-        <h3 class="text-xs font-semibold text-slate-300">Active Providers</h3>
-        <span class="text-[10px] text-slate-500">Top Service</span>
-      </div>
-      <div id="provider-list" class="space-y-2">
-        <!-- Dynamic Content Injection Here -->
-        <div class="text-center text-slate-500 text-[10px] py-4">Checking connection...</div>
-      </div>
-    </div>
-
-    <!-- Alerts Banner -->
-    <div
-      class="rounded-lg border border-white/5 bg-gradient-to-r from-slate-900 to-slate-800 p-3 flex items-center gap-3 relative overflow-hidden">
-      <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-rose-500 to-orange-500"></div>
-      <div class="relative">
-        <div id="alert-indicator" class="h-2 w-2 rounded-full bg-rose-500 animate-pulse absolute -top-0.5 -right-0.5"
-          style="display:none"></div>
-        <span class="material-symbols-outlined text-slate-400">notifications</span>
-      </div>
-      <div class="flex-1">
-        <div class="flex justify-between items-center">
-          <span class="text-xs font-medium text-slate-200">System Alerts</span>
-          <span id="alert-count"
-            class="bg-rose-500/10 text-rose-500 px-1.5 py-0.5 rounded text-[10px] font-bold border border-rose-500/20">0</span>
+    </header>
+    <div class="flex-1 overflow-y-auto overflow-x-hidden bg-[#0F172A]">
+      <div class="p-5 flex flex-col gap-5">
+        <div class="flex flex-col gap-1 relative z-10 text-center pt-2">
+          <span class="text-slate-400 text-[11px] font-medium uppercase tracking-widest">Month-to-Date Spend</span>
+          <h2 class="text-[40px] font-semibold text-white tracking-tighter text-glow mt-1 leading-none font-display">
+            $12,450.00</h2>
+          <div class="flex items-center justify-center gap-2 mt-2">
+            <span
+              class="bg-indigo-500/10 text-indigo-300 px-2 py-0.5 rounded text-[11px] font-medium border border-indigo-500/20 shadow-[0_0_10px_rgba(99,102,241,0.2)]">
+              +12.5% vs last mo
+            </span>
+          </div>
         </div>
-        <p id="alert-status-text" class="text-slate-500 text-[10px] mt-0.5">All systems normal</p>
+        <div class="relative h-28 w-full -mx-2 -mt-2">
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/10 to-transparent z-10 pointer-events-none">
+          </div>
+          <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 380 100">
+            <defs>
+              <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#6366F1" stop-opacity="0.4"></stop>
+                <stop offset="100%" stop-color="#6366F1" stop-opacity="0"></stop>
+              </linearGradient>
+            </defs>
+            <path d="M0 80 C 40 75, 50 60, 90 65 S 150 40, 190 55 S 250 30, 300 45 S 350 20, 380 40 V 100 H 0 Z"
+              fill="url(#chartGradient)"></path>
+            <path d="M0 80 C 40 75, 50 60, 90 65 S 150 40, 190 55 S 250 30, 300 45 S 350 20, 380 40" fill="none"
+              stroke="#818CF8" stroke-linecap="round" stroke-width="2"></path>
+          </svg>
+        </div>
+        <div class="grid grid-cols-2 gap-3 -mt-4">
+          <div
+            class="bg-[#0F172A] rounded-lg p-4 border border-card-border shadow-inner-subtle hover:border-slate-600 transition-colors group">
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-slate-400 text-[10px] font-semibold uppercase tracking-wider">Forecast</span>
+              <span
+                class="material-symbols-outlined text-slate-600 text-[16px] group-hover:text-indigo-400 transition-colors">insights</span>
+            </div>
+            <p class="text-white text-xl font-bold tracking-tight">$14,200</p>
+            <span class="text-emerald-400 text-[10px] font-medium flex items-center gap-1 mt-1">
+              <span class="material-symbols-outlined text-[12px]">trending_down</span>
+              2.1% under
+            </span>
+          </div>
+          <div
+            class="bg-[#0F172A] rounded-lg p-4 border border-card-border shadow-inner-subtle hover:border-slate-600 transition-colors group relative overflow-hidden">
+            <div class="absolute -right-4 -top-4 w-12 h-12 bg-rose-500/10 rounded-full blur-xl"></div>
+            <div class="flex justify-between items-start mb-2 relative z-10">
+              <span class="text-slate-400 text-[10px] font-semibold uppercase tracking-wider">Alerts</span>
+              <div class="w-2 h-2 rounded-full bg-rose-500 animate-pulse shadow-[0_0_8px_rgba(244,63,94,0.6)]"></div>
+            </div>
+            <p class="text-white text-xl font-bold tracking-tight relative z-10">3 Critical</p>
+            <span class="text-slate-500 text-[10px] font-medium mt-1 block relative z-10">
+              Budget exceeded
+            </span>
+          </div>
+        </div>
+        <div class="flex flex-col gap-3 pt-2">
+          <div class="flex justify-between items-center">
+            <h3 class="text-slate-300 text-xs font-semibold">Active Services</h3>
+          </div>
+          <div class="space-y-2">
+            <div class="flex items-center gap-3 py-1">
+              <div
+                class="w-6 h-6 rounded flex items-center justify-center bg-slate-800 text-[#FF9900] text-[9px] font-bold border border-slate-700">
+                AWS</div>
+              <div class="flex-1">
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-300">EC2 Instances</span>
+                  <span class="text-white font-mono">$8,450</span>
+                </div>
+                <div class="h-1 bg-slate-800 rounded-full overflow-hidden">
+                  <div class="h-full bg-[#FF9900] w-[65%] rounded-full"></div>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 py-1">
+              <div
+                class="w-6 h-6 rounded flex items-center justify-center bg-slate-800 text-[#4285F4] text-[9px] font-bold border border-slate-700">
+                GCP</div>
+              <div class="flex-1">
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-300">BigQuery</span>
+                  <span class="text-white font-mono">$880</span>
+                </div>
+                <div class="h-1 bg-slate-800 rounded-full overflow-hidden">
+                  <div class="h-full bg-[#4285F4] w-[15%] rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
-  </main>
-
-  <!-- Footer Actions -->
-  <footer class="p-4 border-t border-white/5 bg-[#0e121a]">
-    <button id="btn-open-dashboard"
-      class="group flex w-full items-center justify-center gap-2 rounded-lg bg-primary/10 hover:bg-primary/20 border border-primary/20 px-4 py-2.5 transition-all active:scale-[0.98]">
-      <span
-        class="material-symbols-outlined text-primary text-[18px] group-hover:scale-110 transition-transform">dashboard</span>
-      <span class="text-xs font-semibold text-primary">Open Full Dashboard</span>
-    </button>
-  </footer>
-
+    <div class="p-5 pt-4 bg-[#0F172A] border-t border-card-border flex flex-col gap-4 sticky bottom-0 z-20">
+      <button id="btn-open-dashboard"
+        class="w-full bg-slate-100 hover:bg-white hover:-translate-y-0.5 active:translate-y-0 text-slate-900 font-bold py-2.5 rounded text-xs transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-white/5">
+        <span>Open Full Dashboard</span>
+        <span class="material-symbols-outlined text-[16px]">arrow_outward</span>
+      </button>
+      <div class="flex items-center justify-between text-[10px] text-slate-500 font-medium">
+        <span class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[12px] text-emerald-500">lock</span>
+          AES-GCM Encrypted
+        </span>
+        <span class="opacity-60">Client-Side Only</span>
+      </div>
+    </div>
+  </div>
   <script src="popup.js"></script>
 </body>
 

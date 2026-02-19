@@ -12,36 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#5E6AD2", "background-light": "#ffffff",
-                        "background-dark": "#0B0E14", "card-dark": "#151921", "border-dark": "#272B36", "aws": "#FF9900",
-                        "azure": "#0078D4",
-                        "gcp": "#DB4437",
-                        "muted-text": "#8A8F98",
-                        "highlight": "#E0E6ED",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"],
-                        "sans": ["Inter", "sans-serif"],
-                    },
-                    boxShadow: {
-                        "glow": "0 0 20px rgba(94, 106, 210, 0.15)",
-                        "glass": "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
-                    },
-                    backgroundImage: {
-                        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-                        "subtle-grid": "url(\"data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23272B36' fill-opacity='0.4' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3C/g%3E%3C/svg%3E\")",
-                    }
-                },
-            },
-        }
-    </script>
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -76,6 +47,10 @@
             background: linear-gradient(to right, #ffffff, #8A8F98);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        .bg-subtle-grid {
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23272B36' fill-opacity='0.4' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3C/g%3E%3C/svg%3E");
         }
     </style>
 </head>

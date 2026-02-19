@@ -10,210 +10,167 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
     rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#6366F1", "background-dark": "#0F172A",
-            "card-dark": "#0F172A",
-            "card-border": "#1E293B",
-            "card-hover": "#1E293B",
-          },
-          fontFamily: {
-            "display": ["Inter", "sans-serif"]
-          },
-          boxShadow: {
-            "glow": "0 0 15px rgba(99, 102, 241, 0.15)",
-            "inner-subtle": "inset 0 1px 1px 0 rgba(255, 255, 255, 0.05)"
-          }
-        },
-      },
-    }
-  </script>
+  <link rel="stylesheet" href="styles.css">
   <style>
     ::-webkit-scrollbar {
       width: 4px;
     }
 
     ::-webkit-scrollbar-track {
-      background: #0F172A;
+      background: #0B0E14;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: #334155;
-      border-radius: 4px;
+      background: #272B36;
+      border-radius: 2px;
     }
 
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-color: #000;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', sans-serif;
-      width: 380px;
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3F4451;
     }
 
-    .extension-popup {
-      width: 100%;
-      height: 600px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
+    .glass-panel {
+      background: rgba(21, 25, 33, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .text-glow {
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
     }
   </style>
 </head>
 
-<body class="font-display text-slate-200">
-  <div class="extension-popup bg-background-dark border border-slate-800 relative">
-    <header
-      class="flex items-center justify-between px-5 py-3 border-b border-card-border bg-[#0F172A]/95 backdrop-blur-sm sticky top-0 z-20">
-      <div class="flex items-center gap-2">
-        <div class="size-6 rounded bg-primary/20 flex items-center justify-center text-indigo-400">
-          <svg fill="none" height="14" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+<body
+  class="bg-background-dark text-slate-100 antialiased selection:bg-primary/30 selection:text-white w-[350px] h-[550px] flex flex-col overflow-hidden border border-slate-800/40 relative">
+  <!-- Subtle Grid Background -->
+  <div class="absolute inset-0 z-[-1] opacity-40 pointer-events-none"
+    style="background-image: radial-gradient(#272B36 1px, transparent 1px); background-size: 20px 20px;"></div>
+
+  <!-- Header -->
+  <header
+    class="flex items-center justify-between px-5 py-3 border-b border-white/5 bg-[#0B0E14]/80 backdrop-blur-sm sticky top-0 z-20">
+    <div class="flex items-center gap-2">
+      <div
+        class="flex h-6 w-6 items-center justify-center rounded bg-gradient-to-br from-primary to-indigo-600 shadow-glow">
+        <span class="material-symbols-outlined text-white text-[16px]">cloud</span>
+      </div>
+      <span class="text-sm font-semibold tracking-wide text-white">CloudSight</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <!-- Status Badges for Providers -->
+      <div class="flex items-center gap-1">
+        <!-- AWS -->
+        <div id="badge-aws"
+          class="h-4 w-4 rounded-full bg-slate-800 flex items-center justify-center grayscale opacity-40 transition-all duration-300"
+          title="AWS">
+          <svg class="w-2.5 h-2.5 text-[#FF9900]" fill="currentColor" viewBox="0 0 24 24">
             <path
-              d="M19 5H5C3.89543 5 3 5.89543 3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V7C21 5.89543 20.1046 5 19 5Z"
-              stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-            <path d="M7 12L12 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+              d="M17.4 12.6c-.4 0-.8.1-1.1.2-.3.2-.6.4-.8.7-.2.3-.4.6-.5 1-.1.4-.1.8-.1 1.2s0 .8.1 1.2c.1.4.3.7.5 1 .2.3.5.5.8.7.3.2.7.2 1.1.2.4 0 .8-.1 1.1-.2.3-.2.6-.4.8-.7.2-.3.4-.6.5-1 .1-.4.1-.8.1-1.2s0-.8-.1-1.2c-.1-.4-.3-.7-.5-1-.2-.3-.5-.5-.8-.7-.3-.2-.7-.3-1.1-.3zm-4.7 0c-.4 0-.8.1-1.1.2-.3.2-.6.4-.8.7-.2.3-.4.6-.5 1-.1.4-.1.8-.1 1.2s0 .8.1 1.2c.1.4.3.7.5 1 .2.3.5.5.8.7.3.2.7.2 1.1.2.4 0 .8-.1 1.1-.2.3-.2.6-.4.8-.7.2-.3.4-.6.5-1 .1-.4.1-.8.1-1.2s0-.8-.1-1.2c-.1-.4-.3-.7-.5-1-.2-.3-.5-.5-.8-.7-.3-.2-.7-.3-1.1-.3zm-9.5 0c-.4 0-.8.1-1.1.2-.3.2-.6.4-.8.7-.2.3-.4.6-.5 1-.1.4-.1.8-.1 1.2s0 .8.1 1.2c.1.4.3.7.5 1 .2.3.5.5.8.7.3.2.7.2 1.1.2.4 0 .8-.1 1.1-.2.3-.2.6-.4.8-.7.2-.3.4-.6.5-1 .1-.4.1-.8.1-1.2s0-.8-.1-1.2c-.1-.4-.3-.7-.5-1-.2-.3-.5-.5-.8-.7-.3-.2-.7-.3-1.1-.3zm15.1-4c-.7-.9-1.5-1.5-2.6-2s-2.3-.7-3.7-.7c-1.4 0-2.6.2-3.7.7-1.1.5-1.9 1.1-2.6 2l1.1 1.6c.5-.7 1.2-1.2 2-1.5 1-.4 2.1-.6 3.2-.6s2.3.2 3.2.6c.9.4 1.5.9 2 1.5l1.1-1.6z">
             </path>
           </svg>
         </div>
-        <span class="text-sm font-semibold text-white tracking-tight">CloudSight</span>
-      </div>
-      <div class="flex items-center gap-3">
-        <div class="flex items-center gap-1.5 px-2 py-1 bg-slate-800/40 rounded border border-white/5">
-          <div id="badge-aws" class="size-4 grayscale opacity-40 hover:opacity-100 transition-all cursor-pointer"
-            title="AWS">
-            <svg fill="#FF9900" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L2 7L12 12L22 7L12 2Z"></path>
-              <path d="M2 17L12 22L22 17"></path>
-              <path d="M2 12L12 17L22 12"></path>
-            </svg>
-          </div>
-          <div id="badge-azure"
-            class="size-4 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer"
-            title="Azure">
-            <svg fill="#0078D4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <rect height="9" width="9" x="2" y="2"></rect>
-              <rect height="9" width="9" x="13" y="2"></rect>
-              <rect height="9" width="9" x="2" y="13"></rect>
-              <rect height="9" width="9" x="13" y="13"></rect>
-            </svg>
-          </div>
-          <div id="badge-gcp" class="size-4 grayscale opacity-40 hover:opacity-100 transition-all cursor-pointer"
-            title="GCP">
-            <svg fill="#4285F4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10"></circle>
-            </svg>
-          </div>
-        </div>
-        <div class="h-4 w-px bg-slate-700"></div>
-        <span id="currency-display" class="text-[11px] font-medium text-slate-400">USD</span>
-        <button id="btn-settings" class="text-slate-400 hover:text-white transition-colors">
-          <span class="material-symbols-outlined text-[18px]">settings</span>
-        </button>
-      </div>
-    </header>
-
-    <div class="flex-1 overflow-y-auto overflow-x-hidden bg-[#0F172A]">
-      <div class="p-5 flex flex-col gap-5">
-        <div class="flex flex-col gap-1 relative z-10 text-center pt-2">
-          <span class="text-slate-400 text-[11px] font-medium uppercase tracking-widest">Month-to-Date Spend</span>
-          <h2 id="total-spend"
-            class="text-[40px] font-semibold text-white tracking-tighter text-glow mt-1 leading-none font-display">--
-          </h2>
-          <div class="flex items-center justify-center gap-2 mt-2">
-            <span
-              class="bg-indigo-500/10 text-indigo-300 px-2 py-0.5 rounded text-[11px] font-medium border border-indigo-500/20 shadow-[0_0_10px_rgba(99,102,241,0.2)]">
-              Current Month
-            </span>
-          </div>
-        </div>
-
-        <div class="relative h-28 w-full -mx-2 -mt-2">
-          <!-- Placeholder SVG chart for now, functional if possible later -->
-          <div
-            class="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/10 to-transparent z-10 pointer-events-none">
-          </div>
-          <svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 380 100">
-            <defs>
-              <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stop-color="#6366F1" stop-opacity="0.4"></stop>
-                <stop offset="100%" stop-color="#6366F1" stop-opacity="0"></stop>
-              </linearGradient>
-            </defs>
-            <path d="M0 80 C 40 75, 50 60, 90 65 S 150 40, 190 55 S 250 30, 300 45 S 350 20, 380 40 V 100 H 0 Z"
-              fill="url(#chartGradient)"></path>
-            <path d="M0 80 C 40 75, 50 60, 90 65 S 150 40, 190 55 S 250 30, 300 45 S 350 20, 380 40" fill="none"
-              stroke="#818CF8" stroke-linecap="round" stroke-width="2"></path>
+        <!-- Azure -->
+        <div id="badge-azure"
+          class="h-4 w-4 rounded-full bg-slate-800 flex items-center justify-center grayscale opacity-40 transition-all duration-300"
+          title="Azure">
+          <svg class="w-2.5 h-2.5 text-[#0078D4]" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M5.4 20l3.1-9.3 5.4 9.3H5.4zm-1.8-1l7.8-14h1.7l-4.2 14H3.6zm10.2 1l5.8-9.8h-4.6l-3.3 5.6 2.1 4.2z">
+            </path>
           </svg>
         </div>
-
-        <div class="grid grid-cols-2 gap-3 -mt-4">
-          <div
-            class="bg-[#0F172A] rounded-lg p-4 border border-card-border shadow-inner-subtle hover:border-slate-600 transition-colors group">
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-slate-400 text-[10px] font-semibold uppercase tracking-wider">Forecast</span>
-              <span
-                class="material-symbols-outlined text-slate-600 text-[16px] group-hover:text-indigo-400 transition-colors">insights</span>
-            </div>
-            <p id="forecast-spend" class="text-white text-xl font-bold tracking-tight">--</p>
-            <span class="text-emerald-400 text-[10px] font-medium flex items-center gap-1 mt-1">
-              End of Month
-            </span>
-          </div>
-          <div
-            class="bg-[#0F172A] rounded-lg p-4 border border-card-border shadow-inner-subtle hover:border-slate-600 transition-colors group relative overflow-hidden">
-            <div class="absolute -right-4 -top-4 w-12 h-12 bg-rose-500/10 rounded-full blur-xl"></div>
-            <div class="flex justify-between items-start mb-2 relative z-10">
-              <span class="text-slate-400 text-[10px] font-semibold uppercase tracking-wider">Alerts</span>
-              <div id="alert-indicator"
-                class="w-2 h-2 rounded-full bg-rose-500 animate-pulse shadow-[0_0_8px_rgba(244,63,94,0.6)]"
-                style="display:none"></div>
-            </div>
-            <p id="alert-count" class="text-white text-xl font-bold tracking-tight relative z-10">0</p>
-            <span id="alert-status-text" class="text-slate-500 text-[10px] font-medium mt-1 block relative z-10">
-              All systems normal
-            </span>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-3 pt-2">
-          <div class="flex justify-between items-center">
-            <h3 class="text-slate-300 text-xs font-semibold">Active Providers</h3>
-          </div>
-          <div class="space-y-2" id="provider-list">
-            <!-- Dynamic Content Will Be Injected Here via popup.js -->
-            <div class="text-center text-xs text-slate-500 py-2">Loading...</div>
-          </div>
+        <!-- GCP -->
+        <div id="badge-gcp"
+          class="h-4 w-4 rounded-full bg-slate-800 flex items-center justify-center grayscale opacity-40 transition-all duration-300"
+          title="GCP">
+          <svg class="w-2.5 h-2.5 text-[#DB4437]" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 24c6.6 0 12-5.4 12-12S18.6 0 12 0 0 5.4 0 12s5.4 12 12 12z" fill="#fff" fill-opacity="0.1">
+            </path>
+            <path
+              d="M12.3 10.3v3.4h4.8c-.2 1.2-1.4 3.5-4.8 3.5-2.9 0-5.3-2.4-5.3-5.3s2.4-5.3 5.3-5.3c1.3 0 2.5.5 3.4 1.3l2.7-2.7C16.8 3.7 14.7 2.7 12.3 2.7 7 2.7 2.7 7 2.7 12.3s4.3 9.6 9.6 9.6c5.5 0 9.2-3.9 9.2-9.4 0-.8-.1-1.4-.2-2H12.3z">
+            </path>
+          </svg>
         </div>
       </div>
-    </div>
-
-    <div class="p-5 pt-4 bg-[#0F172A] border-t border-card-border flex flex-col gap-4 sticky bottom-0 z-20">
-      <button id="btn-open-dashboard"
-        class="w-full bg-slate-100 hover:bg-white hover:-translate-y-0.5 active:translate-y-0 text-slate-900 font-bold py-2.5 rounded text-xs transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-white/5">
-        <span>Open Full Dashboard</span>
-        <span class="material-symbols-outlined text-[16px]">arrow_outward</span>
+      <button id="btn-settings" class="text-slate-400 hover:text-white transition-colors">
+        <span class="material-symbols-outlined text-[18px]">settings</span>
       </button>
-      <div class="flex items-center justify-between text-[10px] text-slate-500 font-medium">
-        <span class="flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-[12px] text-emerald-500">lock</span>
-          AES-GCM Encrypted
-        </span>
-        <span class="opacity-60">Client-Side Only</span>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 overflow-y-auto p-5 space-y-5">
+
+    <!-- Total Spend Card -->
+    <div class="relative overflow-hidden rounded-xl border border-white/5 bg-card-dark p-1 shadow-glow group">
+      <div class="absolute top-0 right-0 p-3 opacity-20 group-hover:opacity-30 transition-opacity">
+        <span class="material-symbols-outlined text-5xl text-primary">payments</span>
+      </div>
+      <div class="relative bg-[#151921]/90 backdrop-blur rounded-[10px] p-4 z-10">
+        <p class="text-[10px] font-semibold text-muted-text uppercase tracking-widest">Total Spend (MTD)</p>
+        <div class="flex items-baseline gap-1 mt-1">
+          <h2 id="total-spend" class="text-[32px] font-bold text-white text-glow tracking-tight leading-none">$0.00</h2>
+          <span id="currency-display" class="text-xs font-medium text-slate-500">USD</span>
+        </div>
+        <div class="mt-3 flex items-center justify-between">
+          <div class="flex flex-col">
+            <span class="text-[10px] text-slate-400">Forecast</span>
+            <p id="forecast-spend" class="text-xs font-semibold text-indigo-400">$0.00</p>
+          </div>
+          <div class="flex flex-col items-end">
+            <!-- Mini Chart Placeholder -->
+            <svg width="60" height="20" viewBox="0 0 60 20" fill="none">
+              <path d="M0 18C10 18 15 8 20 12C25 16 30 4 35 8C40 12 45 2 50 5C55 8 60 0 60 0" stroke="#6366F1"
+                stroke-width="2" stroke-opacity="0.5" />
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+
+    <!-- Active Services List -->
+    <div>
+      <div class="flex items-center justify-between mb-2 px-1">
+        <h3 class="text-xs font-semibold text-slate-300">Active Providers</h3>
+        <span class="text-[10px] text-slate-500">Top Service</span>
+      </div>
+      <div id="provider-list" class="space-y-2">
+        <!-- Dynamic Content Injection Here -->
+        <div class="text-center text-slate-500 text-[10px] py-4">Checking connection...</div>
+      </div>
+    </div>
+
+    <!-- Alerts Banner -->
+    <div
+      class="rounded-lg border border-white/5 bg-gradient-to-r from-slate-900 to-slate-800 p-3 flex items-center gap-3 relative overflow-hidden">
+      <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-rose-500 to-orange-500"></div>
+      <div class="relative">
+        <div id="alert-indicator" class="h-2 w-2 rounded-full bg-rose-500 animate-pulse absolute -top-0.5 -right-0.5"
+          style="display:none"></div>
+        <span class="material-symbols-outlined text-slate-400">notifications</span>
+      </div>
+      <div class="flex-1">
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-medium text-slate-200">System Alerts</span>
+          <span id="alert-count"
+            class="bg-rose-500/10 text-rose-500 px-1.5 py-0.5 rounded text-[10px] font-bold border border-rose-500/20">0</span>
+        </div>
+        <p id="alert-status-text" class="text-slate-500 text-[10px] mt-0.5">All systems normal</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer Actions -->
+  <footer class="p-4 border-t border-white/5 bg-[#0e121a]">
+    <button id="btn-open-dashboard"
+      class="group flex w-full items-center justify-center gap-2 rounded-lg bg-primary/10 hover:bg-primary/20 border border-primary/20 px-4 py-2.5 transition-all active:scale-[0.98]">
+      <span
+        class="material-symbols-outlined text-primary text-[18px] group-hover:scale-110 transition-transform">dashboard</span>
+      <span class="text-xs font-semibold text-primary">Open Full Dashboard</span>
+    </button>
+  </footer>
+
   <script src="popup.js"></script>
 </body>
 

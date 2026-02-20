@@ -1,0 +1,8 @@
+[
+  {
+    "storage": "To securely store encrypted API credentials and cached cost data locally on your device.",
+    "alarms": "To schedule a background check of your cloud costs every 6 hours to provide real-time updates.",
+    "notifications": "To alert you immediately if your specified budget threshold is exceeded or if a cost anomaly is detected.",
+    "host_permissions": "To communicate directly with the official AWS, Azure, and GCP billing APIs to fetch your cost data without an intermediary server."
+  }
+]

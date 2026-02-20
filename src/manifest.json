@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "CloudSight Enterprise",
-    "version": "1.1",
-    "description": "Real-time cost monitoring and system health dashboard for AWS, Azure, and GCP.",
+    "version": "1.2",
+    "description": "Secure, real-time multi-cloud cost dashboard for AWS, Azure, and GCP. Track spending and budget alerts in your browser.",
     "permissions": [
         "storage",
         "alarms",
@@ -22,7 +22,7 @@
     "action": {
         "default_popup": "popup.html",
         "default_title": "Cloud Dashboard",
-        "default_icon": "icon.png"
+        "default_icon": "assets/icon48.png"
     },
     "icons": {
         "16": "assets/icon16.png",

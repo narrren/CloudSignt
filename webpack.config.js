@@ -1,6 +1,7 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
   mode: 'production',
@@ -15,6 +16,16 @@ module.exports = {
     filename: '[name].js',
     clean: true,
   },
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin({
+      terserOptions: {
+        compress: {
+          drop_console: true, // Automatically removes all console.log
+        },
+      },
+    })],
+  },
   module: {
     rules: [
       {
@@ -23,11 +34,9 @@ module.exports = {
       },
     ],
   },
-  // Removed optimization.splitChunks to avoid chunk conflict.
-  // We will output a separate CSS file for each entry point.
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "[name].css", // Generate popup.css, dashboard.css, etc.
+      filename: "[name].css",
     }),
     new CopyPlugin({
       patterns: [
@@ -35,7 +44,6 @@ module.exports = {
         { from: 'src/popup.html', to: '.', noErrorOnMissing: true },
         { from: 'src/options.html', to: '.', noErrorOnMissing: true },
         { from: 'src/dashboard.html', to: '.', noErrorOnMissing: true },
-        // Copy assets folder if it exists, or individual icons
         { from: 'src/assets', to: 'assets', noErrorOnMissing: true },
       ],
     }),

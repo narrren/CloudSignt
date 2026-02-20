@@ -22,10 +22,48 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "FORCE_REFRESH") {
         fetchAllData().then(() => {
-            // Optional: send response back if needed
+            sendResponse({ status: "done" });
         });
+        return true; // Keep channel open
+    }
+    if (message.action === "TEST_CONNECTION") {
+        testConnection(message.creds).then(result => sendResponse(result));
+        return true;
     }
 });
+
+async function testConnection(creds) {
+    let results = { success: true, errors: [] };
+
+    if (creds.aws && creds.aws.key) {
+        try {
+            await fetchAWS(creds.aws);
+        } catch (e) {
+            results.success = false;
+            results.errors.push(`AWS: ${e.message}`);
+        }
+    }
+
+    if (creds.azure && creds.azure.clientId) {
+        try {
+            await fetchAzureCost(creds.azure);
+        } catch (e) {
+            results.success = false;
+            results.errors.push(`Azure: ${e.message}`);
+        }
+    }
+
+    if (creds.gcp && creds.gcp.json) {
+        try {
+            await fetchGCPCost(creds.gcp);
+        } catch (e) {
+            results.success = false;
+            results.errors.push(`GCP: ${e.message}`);
+        }
+    }
+
+    return results;
+}
 
 import { decryptData } from './cryptoUtils';
 
@@ -39,6 +77,7 @@ const RATES = {
 };
 
 // 2. Main Fetch Logic
+// 2. Main Fetch Logic
 async function fetchAllData() {
     const result = await chrome.storage.local.get(["cloudCreds", "encryptedCreds", "currency", "budgetLimit"]);
 
@@ -49,7 +88,72 @@ async function fetchAllData() {
     // cloudCreds may be stored as null (not undefined) when encryption is enabled
     let creds = result.cloudCreds || null;
 
-    // ... (keep existing logic)
+    // Decrypt if necessary
+    if (!creds && result.encryptedCreds) {
+        try {
+            creds = await decryptData(result.encryptedCreds);
+        } catch (e) {
+            console.error("Background: Decryption failed", e);
+            // Cannot proceed without creds
+            return;
+        }
+    }
+
+    if (!creds) {
+        console.log("Background: No credentials found.");
+        return;
+    }
+
+    let dashboardData = {
+        lastUpdated: new Date().toISOString(),
+        currency: currency,
+        rate: rate,
+        budgetLimit: budgetLimit,
+        totalGlobal: 0,
+        aws: null,
+        azure: null,
+        gcp: null
+    };
+
+    // --- AWS ---
+    if (creds.aws && creds.aws.key) {
+        try {
+            const awsData = await fetchAWS(creds.aws);
+            dashboardData.aws = awsData;
+            dashboardData.totalGlobal += awsData.totalCost;
+        } catch (e) {
+            console.error("AWS Fetch Error:", e);
+            dashboardData.aws = { error: e.message };
+        }
+    }
+
+    // --- Azure ---
+    if (creds.azure && creds.azure.clientId) {
+        try {
+            const azureData = await fetchAzureCost(creds.azure);
+            dashboardData.azure = azureData;
+            dashboardData.totalGlobal += azureData.totalCost;
+        } catch (e) {
+            console.error("Azure Fetch Error:", e);
+            dashboardData.azure = { error: e.message };
+        }
+    }
+
+    // --- GCP ---
+    if (creds.gcp && creds.gcp.json) {
+        try {
+            const gcpData = await fetchGCPCost(creds.gcp);
+            dashboardData.gcp = gcpData;
+            dashboardData.totalGlobal += gcpData.totalCost;
+        } catch (e) {
+            console.error("GCP Fetch Error:", e);
+            dashboardData.gcp = { error: e.message };
+        }
+    }
+
+    // Save to Storage
+    await chrome.storage.local.set({ dashboardData: dashboardData });
+    return dashboardData;
 }
 
 // 3. AWS Implementation

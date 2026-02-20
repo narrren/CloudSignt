@@ -61,6 +61,47 @@ tabs.forEach(tab => {
     });
 });
 
+// --- Verify Logic ---
+document.getElementById('btn-verify').addEventListener('click', async () => {
+    const btn = document.getElementById('btn-verify');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Testing...';
+
+    // Construct Creds Object (Duplicated from Save to ensure latest values)
+    const creds = {
+        aws: {
+            key: elAwsKey.value.trim(),
+            secret: elAwsSecret.value.trim()
+        },
+        azure: {
+            subscriptionId: elAzSub.value.trim(),
+            tenantId: elAzTenant.value.trim(),
+            clientId: elAzClient.value.trim(),
+            clientSecret: elAzSecret.value.trim()
+        },
+        gcp: {
+            json: elGcpJson.value.trim()
+        }
+    };
+
+    chrome.runtime.sendMessage({ action: "TEST_CONNECTION", creds: creds }, (response) => {
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined">verified_user</span> Test Connection';
+
+        if (chrome.runtime.lastError) {
+            showStatus("Error: " + chrome.runtime.lastError.message, true);
+            return;
+        }
+
+        if (response && response.success) {
+            showStatus("Connection Successful! You can now save.", false);
+        } else {
+            const errs = response.errors && response.errors.length > 0 ? response.errors.join(", ") : "Unknown Error (Check Console)";
+            showStatus("Connection Failed: " + errs, true);
+        }
+    });
+});
+
 // --- Save Logic ---
 btnSave.addEventListener('click', async () => {
     btnSave.disabled = true;
@@ -107,7 +148,10 @@ btnSave.addEventListener('click', async () => {
         // Trigger background refresh
         chrome.runtime.sendMessage({ action: "FORCE_REFRESH" });
 
-        showStatus("Configuration saved successfully! Data fetch triggered.");
+        showStatus("Configuration saved successfully! Redirecting...");
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 1500);
     } catch (err) {
         // console.error("Save failed", err);
         showStatus("Error saving settings: " + err.message, true);

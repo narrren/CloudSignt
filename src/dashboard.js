@@ -132,46 +132,64 @@ document.addEventListener('DOMContentLoaded', () => {
         if (el) {
             el.addEventListener('click', () => {
                 // Open Options page with specific tab
-                if (chrome.runtime.openOptionsPage) {
-                    // Start 1: We can't pass hash to openOptionsPage directly in all browsers nicely, 
-                    // but we can open a new tab or rely on the options page checking storage/hash if we open it manually.
-                    // chrome.runtime.openOptionsPage() usually focuses existing.
-                    // Let's use window.open for specific hash target if supported, or standard way.
-                    window.open(`options.html#${p.tab}`, '_blank');
-                }
+                window.location.href = `options.html#${p.tab}`;
             });
         }
     });
 });
 
+// 5. Listen for updates (Fix for real-time updates)
+chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local') {
+        if (changes.dashboardData || changes.cloudCreds) {
+            loadData();
+        }
+    }
+});
+
+
 function loadData() {
-    chrome.storage.local.get(['dashboardData'], (result) => {
+    chrome.storage.local.get(['dashboardData', 'cloudCreds', 'encryptedCreds'], (result) => {
         const data = result.dashboardData;
+        const creds = result.cloudCreds;
+        const encrypted = result.encryptedCreds;
+
+        // NEW: Check for Zero State (No Creds AND No Encrypted Data)
+        // If encrypted data exists, we assume setup is done.
+        const hasPlainCreds = creds && (creds.aws || creds.azure || creds.gcp);
+        const hasEncryptedCreds = !!encrypted;
+
+        if (!hasPlainCreds && !hasEncryptedCreds) {
+            renderZeroState();
+            return;
+        }
+
+        // We have credentials, so remove zero state if it exists
+        const zeroState = document.getElementById('zero-state-overlay');
+        if (zeroState) zeroState.remove();
+
+        // Reset content visibility
+        const content = document.querySelector('.p-8');
+        if (content) content.style.opacity = '1';
+
         if (data) {
             currentData = data;
             updateDashboard(data);
-
-            // Pass full data to status updater to check isDemo
-            chrome.storage.local.get(['cloudCreds'], (credResult) => {
-                updateSidebarStatus(credResult.cloudCreds, data.isDemo);
-            });
+            updateSidebarStatus(creds, data.isDemo, data);
         } else {
-            // console.log("No dashboard data found.");
-            updatePlaceholder("No Data Found");
-            chrome.storage.local.get(['cloudCreds'], (credResult) => {
-                updateSidebarStatus(credResult.cloudCreds, false);
-                if (!credResult.cloudCreds) updatePlaceholder("Please Configure Settings");
-            });
+            // Creds exist but no data yet (Loading or Error)
+            updatePlaceholder("Fetching Data...");
+            updateSidebarStatus(creds, false, null);
+            // Trigger fetch if just setup and not already fetching
+            chrome.runtime.sendMessage({ action: "FORCE_REFRESH" });
         }
     });
 }
+// [renderZeroState function remains unchanged]
 
-function updatePlaceholder(msg) {
-    const placeholder = document.querySelector('#chart-container .text-muted-text');
-    if (placeholder) placeholder.innerText = msg;
-}
+// ...
 
-function updateSidebarStatus(creds) {
+function updateSidebarStatus(creds, isDemo, data) {
     // Helper to set Active
     const setActive = (textId, containerId, dotId = null) => {
         const textEx = document.getElementById(textId);
@@ -193,20 +211,21 @@ function updateSidebarStatus(creds) {
         }
     };
 
-    if (!creds) return;
+    // Fallback: If no raw creds (encrypted), use Data presence as indicator of active connection
+    const useData = !creds && data;
 
     // AWS
-    if (creds.aws && creds.aws.key) {
+    if ((creds && creds.aws && creds.aws.key) || (useData && data.aws && !data.aws.error)) {
         setActive(null, 'status-aws-container', 'status-aws-dot');
     }
 
     // Azure
-    if (creds.azure && creds.azure.clientId) {
+    if ((creds && creds.azure && creds.azure.clientId) || (useData && data.azure && !data.azure.error)) {
         setActive('status-azure-text', 'status-azure-container');
     }
 
     // GCP
-    if (creds.gcp && creds.gcp.json) {
+    if ((creds && creds.gcp && creds.gcp.json) || (useData && data.gcp && !data.gcp.error)) {
         setActive('status-gcp-text', 'status-gcp-container');
     }
 }
@@ -246,9 +265,7 @@ function updateDashboard(data) {
     const anomalyBadge = document.getElementById('anomaly-badge');
 
     let errors = [];
-    if (data.aws?.error) errors.push(`AWS: ${data.aws.error}`);
-    if (data.azure?.error) errors.push(`Azure: ${data.azure.error}`);
-    if (data.gcp?.error) errors.push(`GCP: ${data.gcp.error}`);
+
 
     let statusText = "Active";
     let statusColor = "text-white";
@@ -415,17 +432,30 @@ function updateDashboard(data) {
         if (data.gcp?.services) data.gcp.services.forEach(s => allServices.push({ ...s, provider: 'GCP', color: '#DB4437' }));
         allServices.sort((a, b) => b.amount - a.amount);
         const top5 = allServices.slice(0, 5);
+
+        // Icon Definitions
+        const icons = {
+            AWS: `<svg class="w-full h-full text-[#FF9900]" viewBox="0 0 24 24" fill="currentColor"><path d="M16.9 11.2c-.4.5-1.2.7-2.1.7-.8 0-1.5-.2-2-.5l.4-1.6c.4.2.9.4 1.4.4.4 0 .7-.1.9-.2.2-.1.3-.4.3-.6 0-.3-.1-.5-.4-.7-.3-.2-.7-.4-1.3-.5-.7-.1-1.2-.2-1.7-.4-.5-.2-1-.5-1.3-.9-.3-.5-.5-1.1-.5-1.8 0-.8.3-1.5.9-2 .6-.5 1.5-.8 2.5-.8 1.1 0 1.9.3 2.4.8.5.5.8 1.2.8 2.2h-1.6c0-.6-.2-1.2-.5-1.6-.3-.4-.8-.6-1.3-.6-.5 0-.9.2-1.2.5-.2.2-.4.4-.4.7 0 .2.1.4.3.5.2.1.4.2.8.3.5 0 .9.2 1.3.3.6.2 1.1.4 1.5.7.4.3.7.6.9 1 .2.4.3.9.3 1.5 0 .8-.2 1.4-.6 1.9zm-7.1-1.6c.6 0 1.1.2 1.4.6.3.4.5 1 .5 1.7h-5.2c.1-.7.3-1.3.6-1.7.4-.4.9-.6 1.5-.6h1.2zm-2.8 3.8c.2.4.4 1.1.4 2h4v.7c0 1.4-.3 2.5-1 3.3-.7.8-1.6 1.2-2.8 1.2-1.2 0-2.2-.4-2.9-1.3-.7-.9-1-2.3-1-4.1h3.3zm6.6 2.2c-.6 1-.7 1.4-1.1 1.9-.9 1.2-2.6 1.3-3.6 1.3-1.3 0-2.6-.5-3.3-1.2l-1.3 1.3c1.2 1.2 3 1.8 5 1.8 1.6 0 3.8-.4 5.3-2.6.2-.3 1-1.6 1.6-2.5l-2.6 0z" /><path d="M19 8h-1.5v3H16v1.5h1.5v3H19v-3h3V11h-3V8z" opacity="0.8"/></svg>`,
+            Azure: `<svg class="w-full h-full text-[#0078D4]" viewBox="0 0 24 24" fill="currentColor"><path d="M5.4 20l3.1-9.3 5.4 9.3H5.4zm-1.8-1l7.8-14h1.7l-4.2 14H3.6zm10.2 1l5.8-9.8h-4.6l-3.3 5.6 2.1 4.2z"/></svg>`,
+            GCP: `<svg class="w-full h-full text-[#DB4437]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 24c6.6 0 12-5.4 12-12S18.6 0 12 0 0 5.4 0 12s5.4 12 12 12z" fill="#fff" fill-opacity="0.1"></path><path d="M12.3 10.3v3.4h4.8c-.2 1.2-1.4 3.5-4.8 3.5-2.9 0-5.3-2.4-5.3-5.3s2.4-5.3 5.3-5.3c1.3 0 2.5.5 3.4 1.3l2.7-2.7C16.8 3.7 14.7 2.7 12.3 2.7 7 2.7 2.7 7 2.7 12.3s4.3 9.6 9.6 9.6c5.5 0 9.2-3.9 9.2-9.4 0-.8-.1-1.4-.2-2H12.3z"></path></svg>`
+        };
+
         top5.forEach(s => {
             const amountConverted = s.amount * rate;
             const pct = totalCalc > 0 ? (amountConverted / totalCalc) * 100 : 0;
+            const providerIcon = icons[s.provider] || '<span class="material-symbols-outlined text-[16px]">dns</span>';
+
             const html = `
             <div class="group">
                 <div class="flex justify-between items-center text-sm mb-2">
                     <div class="flex items-center gap-3">
-                        <div class="p-1.5 rounded" style="background-color: ${s.color}1a; color: ${s.color}">
-                            <span class="material-symbols-outlined text-[16px]">dns</span>
+                        <div class="h-8 w-8 p-1.5 rounded flex items-center justify-center" style="background-color: ${s.color}1a;">
+                            ${providerIcon}
                         </div>
-                        <span class="font-medium text-slate-200">${s.name}</span>
+                        <div class="flex flex-col">
+                            <span class="font-medium text-slate-200">${s.name}</span>
+                            <span class="text-[10px] text-muted-text uppercase tracking-wide">${s.provider}</span>
+                        </div>
                     </div>
                     <div class="text-right">
                         <span class="font-bold text-white">${format(amountConverted)}</span>

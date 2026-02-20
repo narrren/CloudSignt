@@ -11,7 +11,7 @@ A "Pro-Grade" Chrome Extension that visualizes **AWS, Azure, and Google Cloud (G
   - **Azure**: via Cost Management REST API (OAuth).
   - **GCP**: via Cloud Billing API (Signed JWTs).
 - **Advanced Security**:
-  - **Encrypted Storage**: Uses AES-GCM (Web Crypto API) to encrypt credentials at rest.
+  - **Encrypted Storage**: Uses AES-GCM (Web Crypto API) to encrypt credentials at rest.                                            
 - **Global Currency Support**:
   - View costs in USD, EUR, GBP, INR, or JPY.
 - **Smart Alerts**:
@@ -40,7 +40,7 @@ A "Pro-Grade" Chrome Extension that visualizes **AWS, Azure, and Google Cloud (G
 6. Click **Load unpacked** and select the `dist/` folder.
 
 ### Method 2: Install via ZIP (Distribution)
-1. build the project or download `CloudCommandCenter.zip`.
+1. build the project or download `CloudSight-v1.0.zip`.
 2. Extract the zip file.
 3. Load the extracted folder via Chrome's "Load unpacked" button.
 
@@ -48,7 +48,9 @@ A "Pro-Grade" Chrome Extension that visualizes **AWS, Azure, and Google Cloud (G
 1. Click the extension icon and go to **Options**.
 2. **General Settings**: Select your preferred currency and enable encryption.
 3. Enter credentials for your cloud providers (AWS, Azure, GCP).
-4. Save.
+4. Click **Test Connection** to verify your keys.
+   - *Note: For AWS errors, see [AWS_PERMISSION_FIX.md](AWS_PERMISSION_FIX.md)*.
+5. Save.
 
 ## Architecture
 - **Manifest V3**: Secure and performant extension architecture.

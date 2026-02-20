@@ -1,7 +1,7 @@
 # CloudSight Enterprise - Project Digest
 
 **Project Name:** CloudSight Enterprise  
-**Version:** 1.0.0  
+**Version:** 1.2 (Production Ready)  
 **Type:** Chrome Extension (Manifest V3)  
 **Description:** A comprehensive Multi-Cloud Cost Management Dashboard for AWS, Azure, and GCP.
 
@@ -9,18 +9,24 @@
 
 ## 🚀 Project Overview
 
-CloudSight Enterprise is a browser extension designed to give DevOps engineers and managers a real-time "Single Pane of Glass" view of their cloud expenditures. It connects directly to cloud provider APIs to fetch running costs, forecasts them, and alerts user on budget overruns.
+CloudSight Enterprise is a secure browser extension designed to give DevOps engineers and managers a real-time "Single Pane of Glass" view of their cloud expenditures. It connects directly to cloud provider APIs to fetch running costs, forecasts them, and alerts user on budget overruns.
 
 ### Key Capabilities
 1.  **Multi-Cloud Aggregation**: View AWS, Azure, and GCP costs in one currency.
 2.  **Real-Time Data**: Fetches live data from cloud APIs (Cost Explorer, RateCard, Billing).
-3.  **Secure**: Credentials are encrypted using AES-GCM and stored locally in the browser (`chrome.storage`). Keys never leave the user's machine.
-4.  **Forecasting**: Linear projection of monthly spend based on current usage.
-5.  **Budgeting**: User-defined monthly budget goals with visual tracking.
-6.  **Interactive Dashboard**:
+3.  **Secure & Private**: 
+    *   Credentials are encrypted (AES-GCM) and stored locally (`chrome.storage`). 
+    *   **No external servers**: Data goes directly from your browser to AWS/Azure/GCP.
+4.  **Current Status**: 🟡 Pending AWS Permissions (User needs to attach policy)
+**Last Action**: Verified background logic and added "Test Connection" button.
+**Next Steps**:
+1. User attaches `AWSCostExplorerReadOnlyAccess` in AWS Console.
+2. User verifies connection in Extension Options.
+3. Final dashboard verification.hboard**:
     *   **Cost Trend Analysis**: Visual chart of daily spending.
     *   **Provider Distribution**: Breakdown of cost by provider.
-    *   **Top Services**: List of most expensive services (e.g., EC2, S3, Compute Engine).
+    *   **Top Services**: List of most expensive services.
+    *   **Alert System**: Visual and popup alerts for connection failures or budget overruns.
 
 ---
 
@@ -28,10 +34,11 @@ CloudSight Enterprise is a browser extension designed to give DevOps engineers a
 
 *   **Core**: HTML5, Vanilla JavaScript (ES6+)
 *   **Styling**: [Tailwind CSS](https://tailwindcss.com/) (Utility-first framework)
-*   **Build Tool**: [Webpack](https://webpack.js.org/) (Module bundling, CSS extraction)
+*   **Build Tool**: [Webpack 5](https://webpack.js.org/) (Production Optimized)
+*   **Minification**: [Terser Plugin](https://webpack.js.org/plugins/terser-webpack-plugin/) (Code shrinking & console log removal)
 *   **Charts**: [Chart.js](https://www.chartjs.org/) (Data visualization)
-*   **Icons**: Google Material Symbols
-*   **Encryption**: Web Crypto API (SubtleCrypto)
+*   **Icons**: Google Material Symbols + Custom Assets
+*   **Assets Generation**: Python (Pillow) automation
 
 ---
 
@@ -39,47 +46,41 @@ CloudSight Enterprise is a browser extension designed to give DevOps engineers a
 
 ```text
 CloudSight/
-├── dist/                   # Production build output (Load this in Chrome)
+├── dist/                   # Production build output (Ready for Store)
+│   ├── assets/             # Generated icons (16, 32, 48, 128) & tiles
 │   ├── background.bundle.js
 │   ├── dashboard.bundle.js
 │   ├── options.bundle.js
 │   ├── dashboard.html
 │   └── ...
 ├── src/                    # Source code
+│   ├── assets/             # Raw image assets & master.png
 │   ├── background.js       # Background Service Worker (API fetching, Data processing)
-│   ├── dashboard.js        # Dashboard UI logic (Charts, DOM manipulation)
+│   ├── dashboard.js        # Dashboard UI logic (Charts, Alerts)
 │   ├── dashboard.html      # Main Dashboard View
 │   ├── options.js          # Settings Page logic (Credential saving, Encryption)
-│   ├── options.html        # Settings Page View
 │   ├── cryptoUtils.js      # Encryption helper functions
 │   ├── input.css           # Tailwind source CSS
 │   └── styles.css          # Global styles
-├── manifest.json           # Chrome Extension Manifest V3 configuration
-├── webpack.config.js       # Webpack build configuration
+├── generate_assets.py      # Python script to generate store assets
+├── manifest.json           # Chrome Extension Manifest V3 (Strict CSP)
+├── webpack.config.js       # Production Webpack config
 ├── tailwind.config.js      # Tailwind configuration
-└── package.json            # Project dependencies and scripts
+└── package.json            # Scripts: build, zip, assets
 ```
 
 ---
 
-## 🔌 Architecture & Data Flow
+## 🔌 Architecture & Security
 
 1.  **Configuration**: User enters API Creds in `options.html`.
-2.  **Storage**: Creds are encrypted and saved to `chrome.storage.local`.
+2.  **Encryption**: Creds are encrypted via `cryptoUtils.js` before saving.
 3.  **Data Fetching**:
-    *   `background.js` wakes up on alarm (every 6 hours) or manual refresh.
-    *   Decrypts credentials.
-    *   Calls Cloud APIs (AWS Cost Explorer, Azure Usage API, GCP Billing).
-    *   Processes and aggregates data.
-    *   Saves `dashboardData` to `chrome.storage.local`.
+    *   `background.js` uses `chrome.alarms` to fetch data every 6 hours.
+    *   **Strict CSP**: Manifest prevents unauthorized script execution.
 4.  **Visualization**:
-    *   `dashboard.js` reads `dashboardData`.
-    *   Renders Charts and KPIs.
-
-### API Integration Status
-*   **AWS**: Fully Integrated (Signed Requests via `aws-sdk` or custom signing).
-*   **Azure**: Integrated (Bearer Token auth).
-*   **GCP**: Integrated (Service Account JSON auth).
+    *   `dashboard.js` renders charts.
+    *   **Modal Alerts**: Custom styled modal for system alerts replacing browser popups.
 
 ---
 
@@ -87,38 +88,41 @@ CloudSight/
 
 ### Prerequisites
 *   Node.js (v14+)
-*   npm
+*   Python (for asset generation)
 
 ### 1. Setup
 ```bash
 npm install
+pip install pillow
 ```
 
-### 2. Build (Development & Production)
-The project uses Webpack to bundle assets.
+### 2. Generate Assets
+Place your logo at `src/assets/master.png` and run:
 ```bash
-npm run build
+npm run assets
 ```
-*   This compiles `src/` into `dist/`.
-*   Processes Tailwind CSS.
+This generates all required icons and store tiles.
 
-### 3. Load in Chrome
-1.  Open **Chrome** -> **Extensions** (`chrome://extensions`).
-2.  Enable **Developer Mode** (top right).
-3.  Click **Load unpacked**.
-4.  Select the `dist/` folder.
+### 3. Build & Package
+To create a clean, minimized production zip:
+```bash
+npm run zip
+```
+*   Compiles `src/` into `dist/` (Minified, No Console Logs).
+*   Creates `CloudSight-v1.0.zip` ready for Chrome Web Store upload.
 
 ---
 
-## ✨ Recent Updates (v1.0.0 Polish)
-*   **Removed Demo Mode**: The app now strictly relies on real user data.
-*   **Interactive Sidebar**: Sidebar buttons now scroll to specific dashboard sections.
-*   **Dynamic Budgeting**: Users can set custom budget limits in Settings.
-*   **Responsive Charting**: "1D", "7D", "30D" toggles now update date displays.
+## ✨ Production Updates (v1.2)
+*   **Store Compliance**: Valid `manifest.json`, optimized assets, and extensive permission justification.
+*   **Code Hygiene**: All debug logs (`console.log`) stripped automatically via Terser.
+*   **Privacy Policy**: Hosted at `https://narrren.github.io/CloudSight/privacy.html`.
+*   **User Onboarding**: Auto-opens Options page on installation.
+*   **Alert System**: Replaced native alerts with a responsive Modal UI.
 
 ## ⚠️ Troubleshooting
-*   **"No Data Found"**: Ensure credentials are correct in Settings. Check Console logs for API 403/401 errors.
-*   **Visual Glitches**: Ensure `npm run build` was successful to regenerate CSS.
+*   **"No Data Found"**: Ensure credentials are correct in Settings.
+*   **Build Errors**: Run `npm install` to ensure `terser-webpack-plugin` is present.
 
 ---
 **Maintained by:** Naren Dey

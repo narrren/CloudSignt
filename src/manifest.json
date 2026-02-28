@@ -6,7 +6,9 @@
     "permissions": [
         "storage",
         "alarms",
-        "notifications"
+        "notifications",
+        "declarativeNetRequest",
+        "declarativeNetRequestWithHostAccess"
     ],
     "host_permissions": [
         "https://*.amazonaws.com/*",
@@ -33,6 +35,15 @@
     "background": {
         "service_worker": "background.js",
         "type": "module"
+    },
+    "declarative_net_request": {
+        "rule_resources": [
+            {
+                "id": "ruleset_1",
+                "enabled": true,
+                "path": "rules.json"
+            }
+        ]
     },
     "content_security_policy": {
         "extension_pages": "script-src 'self'; object-src 'self'"

@@ -157,7 +157,7 @@
                                     class="w-full bg-slate-950 border border-border-dark rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-[#FF9900] focus:border-transparent outline-none font-mono text-sm placeholder-slate-600"
                                     placeholder="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY">
                             </div>
-                            <div class="bg-blue-500/10 border border-blue-500/20 rounded p-4 mt-2">
+                            <div class="bg-blue-500/10 border border-blue-500/20 rounded p-4 mt-2 mb-4">
                                 <p class="text-xs text-blue-200">
                                     <strong>Permissions Required:</strong> Attach the
                                     <code
@@ -165,6 +165,11 @@
                                     managed policy to your IAM user.
                                 </p>
                             </div>
+                            <button id="btn-verify-aws"
+                                class="w-full bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined font-normal text-[20px]">verified_user</span>
+                                Test AWS Connection
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -209,7 +214,7 @@
                                 <input type="password" id="az-secret"
                                     class="w-full bg-slate-950 border border-border-dark rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-[#0078D4] focus:border-transparent outline-none font-mono text-sm">
                             </div>
-                            <div class="bg-blue-500/10 border border-blue-500/20 rounded p-4 mt-2">
+                            <div class="bg-blue-500/10 border border-blue-500/20 rounded p-4 mt-2 mb-4">
                                 <p class="text-xs text-blue-200">
                                     <strong>Permissions Required:</strong> Assign the
                                     <code
@@ -217,6 +222,11 @@
                                     role to your App Registration at the Subscription scope.
                                 </p>
                             </div>
+                            <button id="btn-verify-azure"
+                                class="w-full bg-[#0078D4]/10 hover:bg-[#0078D4]/20 text-[#0078D4] border border-[#0078D4]/40 font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined font-normal text-[20px]">verified_user</span>
+                                Test Azure Connection
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -248,23 +258,23 @@
   ...
 }'></textarea>
                             </div>
-                            <div class="bg-blue-500/10 border border-blue-500/20 rounded p-4 mt-2">
+                            <div class="bg-blue-500/10 border border-blue-500/20 rounded p-4 mt-2 mb-4">
                                 <p class="text-xs text-blue-200">
                                     <strong>Permissions Required:</strong> Service Account with
                                     <code>Billing Account Viewer</code> role.
                                 </p>
                             </div>
+                            <button id="btn-verify-gcp"
+                                class="w-full bg-[#DB4437]/10 hover:bg-[#DB4437]/20 text-[#DB4437] border border-[#DB4437]/40 font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined font-normal text-[20px]">verified_user</span>
+                                Test GCP Connection
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Action Bar -->
                 <div class="mt-8 pt-6 border-t border-border-dark flex justify-end items-center gap-4">
-                    <button id="btn-verify"
-                        class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-medium rounded-lg border border-border-dark transition-all flex items-center gap-2 hover:-translate-y-0.5 active:translate-y-0">
-                        <span class="material-symbols-outlined">verified_user</span>
-                        Test Connection
-                    </button>
                     <button id="btn-save"
                         class="px-8 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2">
                         <span class="material-symbols-outlined">save</span>

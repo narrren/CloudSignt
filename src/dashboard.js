@@ -25,7 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeButtons = [
         document.getElementById('btn-1d'),
         document.getElementById('btn-7d'),
-        document.getElementById('btn-30d')
+        document.getElementById('btn-30d'),
+        document.getElementById('btn-60d'),
+        document.getElementById('btn-90d')
     ];
     const dateDisplay = document.querySelector('#date-range-display span');
 
@@ -49,12 +51,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (period === '1D') {
                     dateDisplay.innerText = today.toLocaleDateString(undefined, opts);
                 } else if (period === '7D') {
-                    const past = new Date();
-                    past.setDate(today.getDate() - 7);
+                    const past = new Date(); past.setDate(today.getDate() - 7);
+                    dateDisplay.innerText = `${past.toLocaleDateString(undefined, opts)} - ${today.toLocaleDateString(undefined, opts)}`;
+                } else if (period === '30D') {
+                    const past = new Date(); past.setDate(today.getDate() - 30);
+                    dateDisplay.innerText = `${past.toLocaleDateString(undefined, opts)} - ${today.toLocaleDateString(undefined, opts)}`;
+                } else if (period === '60D') {
+                    const past = new Date(); past.setDate(today.getDate() - 60);
                     dateDisplay.innerText = `${past.toLocaleDateString(undefined, opts)} - ${today.toLocaleDateString(undefined, opts)}`;
                 } else {
-                    const past = new Date();
-                    past.setDate(today.getDate() - 30);
+                    const past = new Date(); past.setDate(today.getDate() - 90);
                     dateDisplay.innerText = `${past.toLocaleDateString(undefined, opts)} - ${today.toLocaleDateString(undefined, opts)}`;
                 }
             }
@@ -65,24 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Chart Toggles (Visual only for now as we lack daily history for Azure/GCP)
-    ['toggle-aws', 'toggle-azure', 'toggle-gcp'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener('click', () => {
-                const isActive = el.classList.contains('bg-white/10');
-                if (isActive) {
-                    el.classList.remove('bg-white/10', 'border', 'border-white/5');
-                    el.classList.add('opacity-60', 'hover:opacity-100');
-                    el.querySelector('span:last-child').className = "text-xs font-medium text-muted-text";
-                } else {
-                    el.classList.add('bg-white/10', 'border', 'border-white/5');
-                    el.classList.remove('opacity-60', 'hover:opacity-100');
-                    el.querySelector('span:last-child').className = "text-xs font-medium text-white";
-                }
-            });
-        }
-    });
+
 
     // 3. Sidebar Links
     const sidebarLinks = document.querySelectorAll('aside nav a');
@@ -141,56 +130,95 @@ document.addEventListener('DOMContentLoaded', () => {
 // 5. Listen for updates (Fix for real-time updates)
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'local') {
-        if (changes.dashboardData || changes.cloudCreds) {
+        if (changes.dashboardData || changes.cloudCreds || changes.cloudAccounts) {
             loadData();
         }
     }
 });
 
-
 function loadData() {
-    chrome.storage.local.get(['dashboardData', 'cloudCreds', 'encryptedCreds'], (result) => {
+    chrome.storage.local.get(null, (result) => {
+        // Read ALL storage to understand state
         const data = result.dashboardData;
-        const creds = result.cloudCreds;
+        const creds = result.cloudAccounts || result.cloudCreds;
         const encrypted = result.encryptedCreds;
 
-        // NEW: Check for Zero State (No Creds AND No Encrypted Data)
-        // If encrypted data exists, we assume setup is done.
-        const hasPlainCreds = creds && (creds.aws || creds.azure || creds.gcp);
-        const hasEncryptedCreds = !!encrypted;
+        // Debug: Show data state on page
+        const debugInfo = {
+            storageKeys: Object.keys(result),
+            hasCloudAccounts: !!result.cloudAccounts,
+            hasCloudCreds: !!result.cloudCreds,
+            hasEncrypted: !!encrypted,
+            hasDashboardData: !!data,
+            dashboardKeys: data ? Object.keys(data) : [],
+            totalGlobal: data?.totalGlobal,
+            awsExists: !!data?.aws,
+            awsError: data?.aws?.error || 'none',
+            awsTotalCost: data?.aws?.totalCost,
+            awsServicesCount: data?.aws?.services?.length,
+            awsHistoryCount: data?.aws?.history?.length,
+            azureExists: !!data?.azure,
+            azureError: data?.azure?.error || 'none',
+            gcpExists: !!data?.gcp,
+            currency: data?.currency,
+            rate: data?.rate
+        };
+        console.log('[CloudSight Debug] Storage state:', JSON.stringify(debugInfo, null, 2));
 
-        if (!hasPlainCreds && !hasEncryptedCreds) {
-            renderZeroState();
+        // Check for Zero State
+        const hasAnyCreds = !!(creds && (creds.aws?.length || creds.azure?.length || creds.gcp?.length ||
+            creds.aws?.key || creds.azure?.clientId || creds.gcp?.json));
+        const hasEncryptedCreds = !!encrypted;
+        const hasData = !!data;
+
+        if (!hasAnyCreds && !hasEncryptedCreds && !hasData) {
+            const content = document.querySelector('.p-8');
+            if (content) {
+                content.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-[60vh] text-center">
+                        <span class="material-symbols-outlined text-6xl text-primary mb-4">cloud_off</span>
+                        <h2 class="text-2xl font-bold text-white mb-2">No Cloud Accounts Connected</h2>
+                        <p class="text-slate-400 mb-6 max-w-md">Connect your AWS, Azure, or GCP accounts in Settings to start tracking your cloud costs.</p>
+                        <a href="options.html" class="px-6 py-3 bg-primary hover:bg-primary/80 text-white rounded-lg font-medium transition-colors">
+                            Go to Settings
+                        </a>
+                    </div>
+                `;
+            }
             return;
         }
 
-        // We have credentials, so remove zero state if it exists
-        const zeroState = document.getElementById('zero-state-overlay');
-        if (zeroState) zeroState.remove();
-
-        // Reset content visibility
-        const content = document.querySelector('.p-8');
-        if (content) content.style.opacity = '1';
-
         if (data) {
             currentData = data;
-            updateDashboard(data);
+            try {
+                updateDashboard(data);
+                console.log('[CloudSight] Dashboard updated successfully');
+            } catch (e) {
+                console.error('[CloudSight] Dashboard update CRASHED:', e.message, e.stack);
+                // Show error visibly on page
+                const totalEl = document.getElementById('total-spend');
+                if (totalEl) totalEl.innerText = 'ERROR';
+                const errDiv = document.createElement('div');
+                errDiv.className = 'fixed bottom-4 right-4 bg-red-900/90 border border-red-500 text-white p-4 rounded-lg max-w-md z-50 text-sm';
+                errDiv.innerHTML = '<b>Dashboard Error:</b><br>' + e.message + '<br><small>' + (e.stack || '').split('\n').slice(0, 3).join('<br>') + '</small>';
+                document.body.appendChild(errDiv);
+            }
             updateSidebarStatus(creds, data.isDemo, data);
         } else {
-            // Creds exist but no data yet (Loading or Error)
-            updatePlaceholder("Fetching Data...");
+            // Creds exist but no data yet — trigger a fetch
+            const totalEl = document.getElementById('total-spend');
+            if (totalEl) totalEl.innerText = 'Fetching...';
+            const forecastEl = document.getElementById('forecast-spend');
+            if (forecastEl) forecastEl.innerText = 'Fetching...';
             updateSidebarStatus(creds, false, null);
-            // Trigger fetch if just setup and not already fetching
             chrome.runtime.sendMessage({ action: "FORCE_REFRESH" });
         }
     });
 }
-// [renderZeroState function remains unchanged]
 
-// ...
+
 
 function updateSidebarStatus(creds, isDemo, data) {
-    // Helper to set Active
     const setActive = (textId, containerId, dotId = null) => {
         const textEx = document.getElementById(textId);
         const contEx = document.getElementById(containerId);
@@ -211,22 +239,34 @@ function updateSidebarStatus(creds, isDemo, data) {
         }
     };
 
-    // Fallback: If no raw creds (encrypted), use Data presence as indicator of active connection
-    const useData = !creds && data;
+    const setError = (textId, containerId) => {
+        const textEx = document.getElementById(textId);
+        if (textEx) {
+            textEx.textContent = "Error";
+            textEx.className = "text-[10px] text-red-400 border border-red-500/20 px-1.5 py-0.5 rounded";
+        }
+    };
 
+    // Use dashboardData as the primary truth for connection state
     // AWS
-    if ((creds && creds.aws && creds.aws.key) || (useData && data.aws && !data.aws.error)) {
+    if (data?.aws && !data.aws.error) {
         setActive(null, 'status-aws-container', 'status-aws-dot');
+    } else if (data?.aws?.error) {
+        setError(null, 'status-aws-container');
     }
 
     // Azure
-    if ((creds && creds.azure && creds.azure.clientId) || (useData && data.azure && !data.azure.error)) {
+    if (data?.azure && !data.azure.error) {
         setActive('status-azure-text', 'status-azure-container');
+    } else if (data?.azure?.error) {
+        setError('status-azure-text', 'status-azure-container');
     }
 
     // GCP
-    if ((creds && creds.gcp && creds.gcp.json) || (useData && data.gcp && !data.gcp.error)) {
+    if (data?.gcp && !data.gcp.error) {
         setActive('status-gcp-text', 'status-gcp-container');
+    } else if (data?.gcp?.error) {
+        setError('status-gcp-text', 'status-gcp-container');
     }
 }
 
@@ -235,27 +275,57 @@ function updateDashboard(data) {
     const rate = data.rate || 1.0;
     const format = (num) => new Intl.NumberFormat('en-US', { style: 'currency', currency: currency }).format(num);
 
-    const totalEl = document.getElementById('total-spend');
-    if (totalEl) totalEl.innerText = format(data.totalGlobal || 0);
+    // All costs in data are stored in USD — convert to display currency
+    const totalInDisplayCurrency = (data.totalGlobal || 0) * rate;
 
-    let totalForecast = 0;
-    if (data.aws?.forecast) totalForecast += parseFloat(data.aws.forecast);
-    if (data.azure?.forecast) totalForecast += parseFloat(data.azure.forecast);
-    if (data.gcp?.forecast) totalForecast += parseFloat(data.gcp.forecast);
+    const totalEl = document.getElementById('total-spend');
+    if (totalEl) totalEl.innerText = format(totalInDisplayCurrency);
+
+    let totalForecast = data.globalForecast?.projectedMonthEndSpend || 0;
+    if (totalForecast === 0) {
+        // Fallback
+        if (data.aws?.forecast) totalForecast += parseFloat(data.aws.forecast);
+        if (data.azure?.forecast) totalForecast += parseFloat(data.azure.forecast);
+        if (data.gcp?.forecast) totalForecast += parseFloat(data.gcp.forecast);
+    }
     if (document.getElementById('forecast-spend')) document.getElementById('forecast-spend').innerText = format(totalForecast * rate);
 
-    // Dynamic Budget Limit
-    const limitRaw = data.budgetLimit || 1000;
-    const budgetLimit = limitRaw * rate;
+    // Global Forecast Analytics: Velocity & Burn Rate
+    const globalVel = data.globalForecast?.acceleration || 0;
+    const globalBurnRate = data.globalForecast?.burnRate || 0;
 
-    const usedPct = budgetLimit > 0 ? ((data.totalGlobal / budgetLimit) * 100).toFixed(0) : 0;
-    const remaining = Math.max(0, budgetLimit - data.totalGlobal); // Don't show negative
+    const velEl = document.getElementById('velocity-percent');
+    const velIcon = document.getElementById('velocity-icon');
+    const velContainer = document.getElementById('velocity-badge');
+
+    if (velEl) velEl.innerText = `${Math.abs(globalVel).toFixed(1)}%`;
+
+    if (velIcon && velContainer) {
+        if (globalVel > 0.5) {
+            velIcon.innerText = "trending_up";
+            velContainer.className = "flex items-center gap-1 rounded bg-rose-500/10 px-1.5 py-0.5 text-[11px] font-medium text-rose-400 border border-rose-500/20";
+        } else if (globalVel < -0.5) {
+            velIcon.innerText = "trending_down";
+            velContainer.className = "flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[11px] font-medium text-emerald-400 border border-emerald-500/20";
+        } else {
+            velIcon.innerText = "horizontal_rule";
+            velContainer.className = "flex items-center gap-1 rounded bg-slate-500/10 px-1.5 py-0.5 text-[11px] font-medium text-slate-400 border border-slate-500/20";
+        }
+    }
+
+    const burnEl = document.getElementById('daily-burn-rate');
+    if (burnEl) burnEl.innerText = format(globalBurnRate * rate);
+
+    // Budget: budgetLimit is entered by user in their display currency (e.g., INR)
+    // totalInDisplayCurrency is already converted — compare directly
+    const budgetLimit = data.budgetLimit || 1000;
+    const usedPct = budgetLimit > 0 ? ((totalInDisplayCurrency / budgetLimit) * 100).toFixed(0) : 0;
+    const remaining = Math.max(0, budgetLimit - totalInDisplayCurrency);
 
     if (document.getElementById('budget-used')) document.getElementById('budget-used').innerText = usedPct + "%";
     if (document.getElementById('budget-remaining')) document.getElementById('budget-remaining').innerText = format(remaining);
 
     const budgetCircle = document.getElementById('budget-circle');
-    // Ensure stroke-dasharray doesn't break if pct > 100
     const dashPct = Math.min(usedPct, 100);
     if (budgetCircle) budgetCircle.setAttribute("stroke-dasharray", `${dashPct}, 100`);
 
@@ -336,12 +406,121 @@ function updateDashboard(data) {
     }
 
     // 5. Anomaly Badge
-    if (data.aws?.anomaly?.isAnomaly && anomalyBadge) {
+    if ((data.aws?.anomaly?.isAnomaly || data.globalAnomalies?.length > 0) && anomalyBadge) {
         anomalyBadge.style.setProperty('display', 'flex', 'important');
-        alerts.push("Anomaly: Unusual Spend Detected in AWS");
+        alerts.push("Anomaly: Unusual Spend Detected");
     }
     if (document.getElementById('last-updated') && data.lastUpdated) {
         document.getElementById('last-updated').innerText = new Date(data.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // 6. Insights Hydration
+    const insightsList = document.getElementById('insights-list');
+    if (insightsList) {
+        insightsList.innerHTML = '';
+        if (data.globalInsights && data.globalInsights.length > 0) {
+            data.globalInsights.forEach(insight => {
+                const iconColor = insight.severity === 'critical' ? 'text-red-500' : (insight.severity === 'warning' ? 'text-amber-500' : 'text-emerald-500');
+                const iconName = insight.severity === 'critical' ? 'error' : (insight.severity === 'warning' ? 'warning' : 'check_circle');
+                insightsList.insertAdjacentHTML('beforeend', `
+                    <div class="flex gap-3 text-sm p-3 bg-white/5 rounded-lg border border-white/5">
+                        <span class="material-symbols-outlined ${iconColor}">${iconName}</span>
+                        <div>
+                            <div class="font-semibold text-white mb-1">${insight.headline}</div>
+                            <div class="text-slate-400 leading-relaxed">${insight.explanation}</div>
+                        </div>
+                    </div>
+                `);
+            });
+        } else {
+            insightsList.innerHTML = '<div class="text-slate-500 text-sm">No insights available right now.</div>';
+        }
+    }
+
+    // Phase 12: FinOps Health Metrics
+    if (data.finopsMetrics) {
+        const valEl = document.getElementById('finops-score-val');
+        const circle = document.getElementById('finops-score-circle');
+        if (valEl) valEl.innerText = data.finopsMetrics.riskScore;
+
+        let colorClass = 'text-emerald-500';
+        let shadowClass = 'drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]';
+        if (data.finopsMetrics.riskScore > 70) {
+            colorClass = 'text-red-500';
+            shadowClass = 'drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]';
+        } else if (data.finopsMetrics.riskScore > 40) {
+            colorClass = 'text-amber-500';
+            shadowClass = 'drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]';
+        }
+
+        if (circle) {
+            circle.setAttribute("stroke-dasharray", `${data.finopsMetrics.riskScore}, 100`);
+            circle.setAttribute("class", `${colorClass} ${shadowClass} transition-all duration-1000`);
+        }
+
+        if (document.getElementById('finops-volatility')) document.getElementById('finops-volatility').innerText = data.finopsMetrics.volatilityIndex.toFixed(2);
+        if (document.getElementById('finops-concentration')) document.getElementById('finops-concentration').innerText = (data.finopsMetrics.concentrationIndex * 100).toFixed(0) + '%';
+        if (document.getElementById('finops-growth')) document.getElementById('finops-growth').innerText = data.finopsMetrics.growthMomentum.toFixed(2);
+    }
+
+    // Phase 13: Provider Health
+    if (data.providerHealth) {
+        const updateHealth = (prov) => {
+            const h = data.providerHealth[prov];
+            if (!h) return;
+            const dot = document.getElementById(`health-dot-${prov}`);
+            const stat = document.getElementById(`health-stat-${prov}`);
+            const lat = document.getElementById(`health-lat-${prov}`);
+
+            if (lat) lat.innerText = h.avgLatency.toFixed(0) + 'ms';
+            if (stat) {
+                stat.innerText = h.status;
+                let cClass = 'text-slate-400 border-slate-500/20';
+                if (h.status === 'Healthy') cClass = 'text-emerald-400 border-emerald-500/20 bg-emerald-500/10';
+                else if (h.status === 'Degraded') cClass = 'text-amber-400 border-amber-500/20 bg-amber-500/10';
+                else if (h.status === 'Unstable') cClass = 'text-red-400 border-red-500/20 bg-red-500/10';
+                stat.className = `text-[10px] font-medium px-2 py-0.5 rounded border uppercase ${cClass}`;
+            }
+            if (dot) {
+                let dClass = 'bg-slate-500';
+                if (h.status === 'Healthy') dClass = 'bg-emerald-500';
+                else if (h.status === 'Degraded') dClass = 'bg-amber-500';
+                else if (h.status === 'Unstable') dClass = 'bg-red-500 cursor-pulse';
+                dot.className = `w-2 h-2 rounded-full ${dClass}`;
+            }
+        };
+        updateHealth('aws'); updateHealth('azure'); updateHealth('gcp');
+    }
+
+    // Phase 11: Root Cause Contributors
+    const rcList = document.getElementById('root-cause-list');
+    if (rcList) {
+        rcList.innerHTML = '';
+        if (data.rootCauses && data.rootCauses.length > 0) {
+            data.rootCauses.forEach(rc => {
+                let itemsHtml = rc.topContributors.map(c => `
+                    <div class="flex items-center justify-between text-sm py-1">
+                        <span class="text-slate-300 font-medium">${c.service}</span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-amber-400">+${format(c.deltaAmount * rate)}</span>
+                            <span class="text-xs text-muted-text w-10 text-right">${c.contributionPercent.toFixed(0)}%</span>
+                        </div>
+                    </div>
+                `).join('');
+
+                rcList.insertAdjacentHTML('beforeend', `
+                    <div class="border border-white/5 bg-white/5 rounded-lg p-4 mb-3">
+                        <div class="text-xs text-muted-text uppercase mb-2 flex justify-between">
+                            <span>${rc.provider} Spike</span>
+                            <span>${new Date(rc.anomalyDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+                        </div>
+                        ${itemsHtml}
+                    </div>
+                `);
+            });
+        } else {
+            rcList.innerHTML = '<div class="flex items-center justify-center h-full text-sm text-slate-500 py-10">No recent anomalies to attribute.</div>';
+        }
     }
 
     function showAlertModal(alerts) {
@@ -377,7 +556,7 @@ function updateDashboard(data) {
             const item = `
                 <div class="flex items-start gap-3 p-3 rounded-lg border ${borderClass} ${bgClass}">
                     <span class="material-symbols-outlined ${colorClass} text-[20px] mt-0.5">${icon}</span>
-                    <span class="text-sm text-slate-200 font-medium leading-relaxed">${alertMsg}</span>
+                    <span class="text-sm text-slate-200 font-medium leading-relaxed whitespace-pre-wrap">${alertMsg}</span>
                 </div>
             `;
             list.insertAdjacentHTML('beforeend', item);
@@ -482,22 +661,40 @@ function renderChart(data, rate, currency, period = '30D') {
         costChartInstance.destroy();
     }
 
-    let history = data.aws?.history || [];
+    // Build chart data: merge all provider daily histories from API (primary, has daily granularity)
+    // then supplement with 90-day historical snapshots for older dates
+    const dayMap = {};
+
+    // 1. Provider API histories (these have daily granularity for the current month)
+    ['aws', 'azure', 'gcp'].forEach(prov => {
+        if (data[prov]?.history) {
+            data[prov].history.forEach(h => {
+                dayMap[h.date] = (dayMap[h.date] || 0) + h.cost;
+            });
+        }
+    });
+
+    // 2. Historical snapshots for older dates not covered by provider APIs
+    if (data.historicalData) {
+        data.historicalData.forEach(h => {
+            if (!dayMap[h.date]) {
+                dayMap[h.date] = h.cost;
+            }
+        });
+    }
+
+    let history = Object.keys(dayMap).sort().map(d => ({ date: d, cost: dayMap[d] }));
 
     // Filter History based on Period
-    // history is array of { date: 'YYYY-MM-DD', cost: number }
     // Sort just in case
     history.sort((a, b) => new Date(a.date) - new Date(b.date));
 
     // Slice
-    if (period === '1D') {
-        history = history.slice(-1);
-    } else if (period === '7D') {
-        history = history.slice(-7);
-    } else {
-        // 30D or Max (we only have ~14 days usually)
-        history = history.slice(-30);
-    }
+    if (period === '1D') history = history.slice(-1);
+    else if (period === '7D') history = history.slice(-7);
+    else if (period === '30D') history = history.slice(-30);
+    else if (period === '60D') history = history.slice(-60);
+    else history = history.slice(-90);
 
     const labels = history.map(h => new Date(h.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
     const values = history.map(h => h.cost * rate);
@@ -514,7 +711,7 @@ function renderChart(data, rate, currency, period = '30D') {
         data: {
             labels: labels,
             datasets: [{
-                label: 'AWS Daily Cost',
+                label: 'Global Daily Cost',
                 data: values,
                 borderColor: '#5E6AD2',
                 backgroundColor: 'rgba(94, 106, 210, 0.1)',
@@ -562,4 +759,7 @@ function renderChart(data, rate, currency, period = '30D') {
             }
         }
     });
+
 }
+
+

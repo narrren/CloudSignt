@@ -62,66 +62,79 @@ tabs.forEach(tab => {
 });
 
 // --- Verify Logic ---
-document.getElementById('btn-verify').addEventListener('click', async () => {
-    const btn = document.getElementById('btn-verify');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Testing...';
+function handleTestConnection(provider, btnId) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
 
-    // Construct Creds Object (Duplicated from Save to ensure latest values)
-    const creds = {
-        aws: {
-            key: elAwsKey.value.trim(),
-            secret: elAwsSecret.value.trim()
-        },
-        azure: {
-            subscriptionId: elAzSub.value.trim(),
-            tenantId: elAzTenant.value.trim(),
-            clientId: elAzClient.value.trim(),
-            clientSecret: elAzSecret.value.trim()
-        },
-        gcp: {
-            json: elGcpJson.value.trim()
-        }
-    };
+    btn.addEventListener('click', async () => {
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Testing...';
 
-    chrome.runtime.sendMessage({ action: "TEST_CONNECTION", creds: creds }, (response) => {
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-symbols-outlined">verified_user</span> Test Connection';
-
-        if (chrome.runtime.lastError) {
-            showStatus("Error: " + chrome.runtime.lastError.message, true);
-            return;
+        // Construct Creds Object with ONLY the targeted provider
+        const creds = {};
+        if (provider === 'aws') {
+            creds.aws = {
+                key: elAwsKey.value.trim(),
+                secret: elAwsSecret.value.trim()
+            };
+        } else if (provider === 'azure') {
+            creds.azure = {
+                subscriptionId: elAzSub.value.trim(),
+                tenantId: elAzTenant.value.trim(),
+                clientId: elAzClient.value.trim(),
+                clientSecret: elAzSecret.value.trim()
+            };
+        } else if (provider === 'gcp') {
+            creds.gcp = {
+                json: elGcpJson.value.trim()
+            };
         }
 
-        if (response && response.success) {
-            showStatus("Connection Successful! You can now save.", false);
-        } else {
-            const errs = response.errors && response.errors.length > 0 ? response.errors.join(", ") : "Unknown Error (Check Console)";
-            showStatus("Connection Failed: " + errs, true);
-        }
+        chrome.runtime.sendMessage({ action: "TEST_CONNECTION", creds: creds }, (response) => {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+
+            if (chrome.runtime.lastError) {
+                showStatus("Error: " + chrome.runtime.lastError.message, true);
+                return;
+            }
+
+            if (response && response.success) {
+                showStatus(`${provider.toUpperCase()} Connection Successful! You can now save.`, false);
+            } else {
+                const errs = response.errors && response.errors.length > 0 ? response.errors.join(", ") : "Unknown Error (Check Console)";
+                showStatus("Connection Failed: " + errs, true);
+            }
+        });
     });
-});
+}
+
+handleTestConnection('aws', 'btn-verify-aws');
+handleTestConnection('azure', 'btn-verify-azure');
+handleTestConnection('gcp', 'btn-verify-gcp');
 
 // --- Save Logic ---
 btnSave.addEventListener('click', async () => {
     btnSave.disabled = true;
     btnSave.innerText = "Saving...";
 
-    // Construct Creds Object
+    // Construct Creds Object (Array Format for Phase 4)
     const creds = {
-        aws: {
+        aws: elAwsKey.value.trim() ? [{
+            accountId: 'default',
             key: elAwsKey.value.trim(),
             secret: elAwsSecret.value.trim()
-        },
-        azure: {
+        }] : [],
+        azure: elAzSub.value.trim() ? [{
             subscriptionId: elAzSub.value.trim(),
             tenantId: elAzTenant.value.trim(),
             clientId: elAzClient.value.trim(),
             clientSecret: elAzSecret.value.trim()
-        },
-        gcp: {
+        }] : [],
+        gcp: elGcpJson.value.trim() ? [{
             json: elGcpJson.value.trim()
-        }
+        }] : []
     };
 
     const currency = elCurrency.value;
@@ -136,10 +149,12 @@ btnSave.addEventListener('click', async () => {
             const encrypted = await encryptData(creds);
             storageData.encryptedCreds = encrypted;
             // Clear plain creds to be safe
+            storageData.cloudAccounts = null;
             storageData.cloudCreds = null;
         } else {
             // Store plain text
-            storageData.cloudCreds = creds;
+            storageData.cloudAccounts = creds;
+            storageData.cloudCreds = null;
             storageData.encryptedCreds = null;
         }
 
@@ -164,19 +179,19 @@ btnSave.addEventListener('click', async () => {
 function showStatus(msg, isError = false) {
     msgStatus.innerText = msg;
     msgStatus.className = isError
-        ? "mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium flex items-center gap-2"
-        : "mb-6 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium flex items-center gap-2";
+        ? "mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium flex items-center gap-2 whitespace-pre-wrap"
+        : "mb-6 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium flex items-center gap-2 whitespace-pre-wrap";
     msgStatus.classList.remove('hidden');
     setTimeout(() => msgStatus.classList.add('hidden'), 5000);
 }
 
 // --- Load Logic ---
 async function loadSettings() {
-    chrome.storage.local.get(['currency', 'budgetLimit', 'cloudCreds', 'encryptedCreds'], async (result) => {
+    chrome.storage.local.get(['currency', 'budgetLimit', 'cloudAccounts', 'cloudCreds', 'encryptedCreds'], async (result) => {
         if (result.currency) elCurrency.value = result.currency;
         if (result.budgetLimit) elBudget.value = result.budgetLimit;
 
-        let creds = result.cloudCreds;
+        let creds = result.cloudAccounts || result.cloudCreds;
 
         // Auto-detect encryption status based on data presence
         if (result.encryptedCreds && !creds) {
@@ -192,19 +207,24 @@ async function loadSettings() {
         }
 
         if (creds) {
+            // Check if array format
+            const awsCreds = Array.isArray(creds.aws) ? creds.aws[0] : creds.aws;
+            const azureCreds = Array.isArray(creds.azure) ? creds.azure[0] : creds.azure;
+            const gcpCreds = Array.isArray(creds.gcp) ? creds.gcp[0] : creds.gcp;
+
             // Populate Fields
-            if (creds.aws) {
-                elAwsKey.value = creds.aws.key || '';
-                elAwsSecret.value = creds.aws.secret || '';
+            if (awsCreds) {
+                elAwsKey.value = awsCreds.key || '';
+                elAwsSecret.value = awsCreds.secret || '';
             }
-            if (creds.azure) {
-                elAzSub.value = creds.azure.subscriptionId || '';
-                elAzTenant.value = creds.azure.tenantId || '';
-                elAzClient.value = creds.azure.clientId || '';
-                elAzSecret.value = creds.azure.clientSecret || '';
+            if (azureCreds) {
+                elAzSub.value = azureCreds.subscriptionId || '';
+                elAzTenant.value = azureCreds.tenantId || '';
+                elAzClient.value = azureCreds.clientId || '';
+                elAzSecret.value = azureCreds.clientSecret || '';
             }
-            if (creds.gcp) {
-                elGcpJson.value = creds.gcp.json || '';
+            if (gcpCreds) {
+                elGcpJson.value = gcpCreds.json || '';
             }
         }
     });

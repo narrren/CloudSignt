@@ -21,7 +21,7 @@ module.exports = {
     minimizer: [new TerserPlugin({
       terserOptions: {
         compress: {
-          drop_console: true, // Automatically removes all console.log
+          drop_console: false, // Keep console for debugging
         },
       },
     })],
@@ -44,6 +44,7 @@ module.exports = {
         { from: 'src/popup.html', to: '.', noErrorOnMissing: true },
         { from: 'src/options.html', to: '.', noErrorOnMissing: true },
         { from: 'src/dashboard.html', to: '.', noErrorOnMissing: true },
+        { from: 'src/rules.json', to: '.', noErrorOnMissing: true },
         { from: 'src/assets', to: 'assets', noErrorOnMissing: true },
       ],
     }),

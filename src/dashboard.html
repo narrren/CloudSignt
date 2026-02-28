@@ -170,25 +170,20 @@
                 </a>
             </div>
         </nav>
-        <div class="p-4 border-t border-border-dark bg-[#0e121a]">
-            <div class="flex items-center gap-3">
-                <div class="h-8 w-8 rounded-full bg-gradient-to-tr from-primary to-purple-400 p-[1px]">
-                    <img alt="User" class="rounded-full bg-black h-full w-full object-cover"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqS2PCfqFOZYGCQkQiddhdV2mnZCx-eHGXIL46mPkbDhHxUPcCPzJTy9fAvd6e2YCcCIw17_rs-sKKgeGxtIejVwXuNiNwNHQ3Z3Olw2XOZFSjOrQN6yfVOckpYxmJ-LOrx8EIgFe4dgl0gRUU-8zGHpPbJ1_PsRxwOl5IGo_QuiwOAj-CU36Mo04VzmtYyOh3Z2PBCuvnuJjhzzbfncklGvh_8LU9QhN3BrEq3FcUTJeSBnALLa5G4Qo6Zpju57nTJt6Pg15swSYn" />
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-xs font-semibold text-white">John Doe</span>
-                    <span class="text-[10px] text-muted-text">DevOps Lead</span>
-                </div>
-            </div>
-        </div>
     </aside>
     <main class="flex-1 overflow-y-auto relative bg-background-dark/50">
         <div class="absolute inset-0 z-[-1] bg-subtle-grid pointer-events-none"></div>
         <header
-            class="sticky top-0 z-20 flex h-20 items-center justify-between border-b border-border-dark bg-[#0B0E14]/80 px-8 backdrop-blur-xl">
-            <div class="flex items-baseline gap-4">
-                <h2 class="text-2xl font-bold text-gradient tracking-tight">Cloud Command Center</h2>
+            class="sticky top-0 z-20 flex h-20 items-center justify-between border-b border-border-dark bg-[#080B10]/95 px-8 backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-glow">
+                    <span class="material-symbols-outlined text-white text-[20px]">leaderboard</span>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold tracking-tight text-white leading-tight">Cost Intelligence <span
+                            class="text-indigo-400">Center</span></h2>
+                </div>
             </div>
             <div class="flex items-center gap-6">
                 <div class="hidden md:flex items-center gap-3 rounded-full border border-amber-500/20 bg-amber-500/5 px-4 py-1.5 backdrop-blur-sm shadow-[0_0_15px_rgba(245,158,11,0.05)]"
@@ -208,7 +203,11 @@
                     <button id="btn-7d"
                         class="px-3 py-1.5 text-xs font-medium text-muted-text hover:text-white transition-colors">7D</button>
                     <button id="btn-30d"
-                        class="bg-white/10 rounded-md px-3 py-1.5 text-xs font-medium text-white shadow-sm ring-1 ring-white/10">30D</button>
+                        class="px-3 py-1.5 text-xs font-medium text-muted-text hover:text-white transition-colors">30D</button>
+                    <button id="btn-60d"
+                        class="px-3 py-1.5 text-xs font-medium text-muted-text hover:text-white transition-colors">60D</button>
+                    <button id="btn-90d"
+                        class="bg-white/10 rounded-md px-3 py-1.5 text-xs font-medium text-white shadow-sm ring-1 ring-white/10">90D</button>
                     <div class="w-px h-4 bg-border-dark mx-1"></div>
                     <button id="date-range-display"
                         class="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-muted-text hover:text-white transition-colors">
@@ -227,21 +226,30 @@
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 <!-- Total Spend -->
                 <div id="card-overview"
-                    class="relative overflow-hidden rounded-xl border border-border-dark bg-card-dark p-6 shadow-sm hover:shadow-glow transition-all duration-300 group">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <span class="material-symbols-outlined text-6xl text-primary">payments</span>
+                    class="relative overflow-hidden rounded-2xl border border-white/5 bg-[#12161f]/80 p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] hover:bg-[#1a1f2e] transition-all duration-300 group backdrop-blur-md">
+                    <div
+                        class="absolute -right-4 -top-4 rounded-full bg-primary/10 p-8 blur-2xl group-hover:bg-primary/20 transition-all">
                     </div>
-                    <p class="text-xs font-medium text-muted-text uppercase tracking-wider">Total Spend (Month)</p>
-                    <div class="mt-4 flex items-baseline gap-2">
-                        <h3 class="text-3xl font-bold text-white tracking-tight" id="total-spend">...</h3>
+                    <div class="absolute top-4 right-4">
+                        <div
+                            class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+                            <span class="material-symbols-outlined text-[20px] text-primary">payments</span>
+                        </div>
                     </div>
-                    <div class="mt-4 flex items-center gap-2">
-                        <span
-                            class="flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[11px] font-medium text-emerald-400 border border-emerald-500/20">
-                            <span class="material-symbols-outlined text-[12px]">trending_up</span> <span
-                                id="trend-percent">0%</span>
+                    <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-widest relative z-10">Total
+                        Spend (Month)</p>
+                    <div class="mt-4 flex items-baseline gap-2 relative z-10">
+                        <h3 class="text-3xl font-bold text-white tracking-tight drop-shadow-md" id="total-spend">...
+                        </h3>
+                    </div>
+                    <div class="mt-4 flex items-center gap-2 relative z-10" id="velocity-container">
+                        <span id="velocity-badge"
+                            class="flex items-center gap-1 rounded bg-slate-500/10 px-1.5 py-0.5 text-[11px] font-medium text-slate-400 border border-slate-500/20 shadow-sm">
+                            <span class="material-symbols-outlined text-[12px]"
+                                id="velocity-icon">horizontal_rule</span>
+                            <span id="velocity-percent">0.0%</span>
                         </span>
-                        <span class="text-[11px] text-muted-text">vs prev. month</span>
+                        <span class="text-[10px] text-slate-500 font-medium">acceleration (3d)</span>
                     </div>
                 </div>
                 <!-- Forecast -->
@@ -257,9 +265,10 @@
                     <div class="mt-4 flex items-center gap-2">
                         <span
                             class="flex items-center gap-1 rounded bg-indigo-500/10 px-1.5 py-0.5 text-[11px] font-medium text-indigo-400 border border-indigo-500/20">
-                            Calculated
+                            Calculation
                         </span>
-                        <span class="text-[11px] text-muted-text">linear projection</span>
+                        <span class="text-[11px] text-muted-text"><span id="daily-burn-rate">$0.00</span> daily
+                            burn</span>
                     </div>
                 </div>
                 <!-- Budget -->
@@ -299,6 +308,90 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Phase 12 & 13: FinOps Health and Provider Health -->
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3" id="health-grid">
+                <!-- FinOps Health Score -->
+                <div id="card-finops-health"
+                    class="relative overflow-hidden rounded-xl border border-border-dark bg-card-dark p-6 shadow-sm hover:shadow-glow transition-all duration-300">
+                    <p
+                        class="text-xs font-medium text-muted-text uppercase tracking-wider mb-4 border-b border-border-dark pb-2">
+                        FinOps Health Score</p>
+                    <div class="flex items-center gap-4">
+                        <div class="relative h-20 w-20 flex-shrink-0">
+                            <svg class="h-full w-full -rotate-90" viewBox="0 0 36 36">
+                                <path class="text-slate-800"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none" stroke="currentColor" stroke-width="3"></path>
+                                <path id="finops-score-circle"
+                                    class="text-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)] transition-all duration-1000"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none" stroke="currentColor" stroke-dasharray="0, 100" stroke-linecap="round"
+                                    stroke-width="3"></path>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-2xl font-bold text-white tracking-tight"
+                                    id="finops-score-val">0</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2 flex-1">
+                            <div class="flex justify-between items-center bg-white/5 rounded px-2 py-1">
+                                <span class="text-[10px] text-muted-text uppercase">Volatility</span>
+                                <span class="text-xs font-medium text-white" id="finops-volatility">0.00</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-white/5 rounded px-2 py-1">
+                                <span class="text-[10px] text-muted-text uppercase">Concentration</span>
+                                <span class="text-xs font-medium text-white" id="finops-concentration">0%</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-white/5 rounded px-2 py-1">
+                                <span class="text-[10px] text-muted-text uppercase">Growth Momentum</span>
+                                <span class="text-xs font-medium text-white" id="finops-growth">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Provider Health Integration -->
+                <div id="card-provider-health"
+                    class="relative overflow-hidden rounded-xl border border-border-dark bg-card-dark p-6 shadow-sm hover:shadow-glow transition-all duration-300 col-span-1 lg:col-span-2">
+                    <p
+                        class="text-xs font-medium text-muted-text uppercase tracking-wider mb-4 border-b border-border-dark pb-2">
+                        Provider Integration Health</p>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div
+                            class="flex flex-col items-center justify-center bg-white/5 rounded-lg p-3 border border-white/5">
+                            <div class="text-sm font-semibold text-white mb-2 flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-slate-500" id="health-dot-aws"></div> AWS
+                            </div>
+                            <div class="text-xs text-muted-text mb-1">Latency: <span id="health-lat-aws"
+                                    class="text-white">0ms</span></div>
+                            <div class="text-[10px] font-medium px-2 py-0.5 rounded border border-slate-500/20 text-slate-400 uppercase"
+                                id="health-stat-aws">Unknown</div>
+                        </div>
+                        <div
+                            class="flex flex-col items-center justify-center bg-white/5 rounded-lg p-3 border border-white/5">
+                            <div class="text-sm font-semibold text-white mb-2 flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-slate-500" id="health-dot-azure"></div> Azure
+                            </div>
+                            <div class="text-xs text-muted-text mb-1">Latency: <span id="health-lat-azure"
+                                    class="text-white">0ms</span></div>
+                            <div class="text-[10px] font-medium px-2 py-0.5 rounded border border-slate-500/20 text-slate-400 uppercase"
+                                id="health-stat-azure">Unknown</div>
+                        </div>
+                        <div
+                            class="flex flex-col items-center justify-center bg-white/5 rounded-lg p-3 border border-white/5">
+                            <div class="text-sm font-semibold text-white mb-2 flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-slate-500" id="health-dot-gcp"></div> GCP
+                            </div>
+                            <div class="text-xs text-muted-text mb-1">Latency: <span id="health-lat-gcp"
+                                    class="text-white">0ms</span></div>
+                            <div class="text-[10px] font-medium px-2 py-0.5 rounded border border-slate-500/20 text-slate-400 uppercase"
+                                id="health-stat-gcp">Unknown</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid grid-cols-12 gap-6">
                 <!-- Chart -->
                 <div id="card-chart"
@@ -306,61 +399,18 @@
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
                         <div>
                             <h3 class="text-lg font-semibold text-white">Cost Trend Analysis</h3>
-                            <p class="text-sm text-muted-text mt-1">Multi-cloud expenditure forecast vs actual usage</p>
-                        </div>
-                        <div class="flex items-center gap-2 bg-[#0B0E14] rounded-lg p-1 border border-border-dark">
-                            <div id="toggle-aws"
-                                class="flex items-center px-3 py-1 bg-white/10 rounded border border-white/5 cursor-pointer hover:bg-white/10 transition-colors">
-                                <span class="w-2 h-2 rounded-full bg-[#FF9900] mr-2"></span>
-                                <span class="text-xs font-medium text-white">AWS</span>
-                            </div>
-                            <div id="toggle-azure"
-                                class="flex items-center px-3 py-1 cursor-pointer hover:bg-white/5 rounded transition-colors opacity-60 hover:opacity-100">
-                                <span class="w-2 h-2 rounded-full bg-[#0078D4] mr-2"></span>
-                                <span class="text-xs font-medium text-muted-text">Azure</span>
-                            </div>
-                            <div id="toggle-gcp"
-                                class="flex items-center px-3 py-1 cursor-pointer hover:bg-white/5 rounded transition-colors opacity-60 hover:opacity-100">
-                                <span class="w-2 h-2 rounded-full bg-[#DB4437] mr-2"></span>
-                                <span class="text-xs font-medium text-muted-text">GCP</span>
-                            </div>
+                            <p class="text-sm text-muted-text mt-1">Multi-cloud daily cost trend</p>
                         </div>
                     </div>
-                    <!-- Keeping User's SVG Chart Placeholder - Static for now, can be made dynamic later with Chart.js canvas if user requests -->
-                    <div class="relative h-80 w-full" id="chart-container">
-                        <canvas id="costChart" style="width:100%; height:100%; display:none;"></canvas>
-                        <!-- Fallback SVG from User -->
-                        <svg class="h-full w-full overflow-visible absolute inset-0" preserveAspectRatio="none"
-                            viewBox="0 0 1000 320">
-                            <defs>
-                                <linearGradient id="gradAWS" x1="0" x2="0" y1="0" y2="1">
-                                    <stop offset="0%" stop-color="#FF9900" stop-opacity="0.2"></stop>
-                                    <stop offset="100%" stop-color="#FF9900" stop-opacity="0"></stop>
-                                </linearGradient>
-                                <linearGradient id="gradAzure" x1="0" x2="0" y1="0" y2="1">
-                                    <stop offset="0%" stop-color="#0078D4" stop-opacity="0.1"></stop>
-                                    <stop offset="100%" stop-color="#0078D4" stop-opacity="0"></stop>
-                                </linearGradient>
-                            </defs>
-                            <!-- Simple Mock Lines -->
-                            <path
-                                d="M0,280 C150,270 250,290 350,240 S550,220 650,230 S750,200 850,210 S950,250 1000,240 V320 H0 Z"
-                                fill="url(#gradAzure)"></path>
-                            <path class=""
-                                d="M0,280 C150,270 250,290 350,240 S550,220 650,230 S750,200 850,210 S950,250 1000,240"
-                                fill="none" stroke="#0078D4" stroke-opacity="0.5" stroke-width="2"></path>
-                            <path
-                                d="M0,250 C100,240 150,260 250,210 S350,180 450,190 S550,130 650,140 S750,110 850,120 S950,80 1000,90 V320 H0 Z"
-                                fill="url(#gradAWS)"></path>
-                            <path class="drop-shadow-[0_0_10px_rgba(255,153,0,0.4)]"
-                                d="M0,250 C100,240 150,260 250,210 S350,180 450,190 S550,130 650,140 S750,110 850,120 S950,80 1000,90"
-                                fill="none" stroke="#FF9900" stroke-linecap="round" stroke-width="3"></path>
-                        </svg>
-                        <div
-                            class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-muted-text text-sm bg-black/50 p-2 rounded">
-                            Static Chart Placeholder</div>
+                    <!-- Chart Container -->
+                    <div class="relative w-full" style="height: 320px;" id="chart-container">
+                        <canvas id="costChart"></canvas>
                     </div>
                 </div>
+            </div>
+
+            <!-- Distribution + Services + Root Cause Grid -->
+            <div class="grid grid-cols-12 gap-6">
                 <!-- Distribution -->
                 <div
                     class="col-span-12 lg:col-span-4 rounded-xl border border-border-dark bg-card-dark p-6 shadow-sm flex flex-col justify-between">
@@ -407,45 +457,69 @@
                     </div>
                 </div>
                 <!-- Top Services -->
-                <div class="col-span-12 lg:col-span-8 rounded-xl border border-border-dark bg-card-dark p-6 shadow-sm">
+                <div class="col-span-12 lg:col-span-4 rounded-xl border border-border-dark bg-card-dark p-6 shadow-sm">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-lg font-semibold text-white">Top Services Breakdown</h3>
-                        <button class="text-xs text-primary hover:text-white font-medium transition-colors">View
-                            Report</button>
                     </div>
                     <div class="space-y-6" id="top-services-list">
                         <!-- Items will be injected here by dashboard.js -->
                         <div class="text-center text-muted-text py-4">Loading services...</div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <!-- Alert Modal -->
-        <div id="alert-modal"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-            <div class="w-full max-w-md transform rounded-xl border border-border-dark bg-card-dark p-6 shadow-2xl transition-all scale-95 duration-300"
-                id="alert-modal-content">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                        <span class="material-symbols-outlined text-amber-500">warning</span>
-                        System Alerts
-                    </h3>
-                    <button id="close-modal" class="text-muted-text hover:text-white transition-colors">
-                        <span class="material-symbols-outlined">close</span>
-                    </button>
-                </div>
-                <div class="space-y-3" id="alert-list">
-                    <!-- Alerts injected here -->
-                </div>
-                <div class="mt-6 flex justify-end">
-                    <button id="btn-resolve"
-                        class="px-4 py-2 bg-primary hover:bg-primary/90 text-white text-sm font-medium rounded-lg transition-colors">
-                        Acknowledge
-                    </button>
+
+                <!-- Root Cause Contributors (Phase 11) -->
+                <div class="col-span-12 lg:col-span-4 rounded-xl border border-border-dark bg-card-dark p-6 shadow-sm"
+                    id="card-root-cause">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-white">Top Cost Spike Contributors</h3>
+                    </div>
+                    <div class="space-y-4" id="root-cause-list">
+                        <div class="flex items-center justify-center h-full text-sm text-slate-500 py-10">No recent
+                            anomalies to attribute.</div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Insights Panel -->
+            <div id="insights-panel"
+                class="rounded-xl border border-indigo-500/20 bg-[#12161f]/80 p-6 shadow-glow backdrop-blur-md">
+                <h3 class="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                    <span class="material-symbols-outlined text-primary">auto_awesome</span>
+                    AI FinOps Insights
+                </h3>
+                <div id="insights-list" class="space-y-4">
+                    <div class="text-sm text-slate-400">Loading AI Insights...</div>
+                </div>
+            </div>
+
         </div>
-        <script src="dashboard.js"></script>
+    </main>
+    <!-- Alert Modal -->
+    <div id="alert-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="w-full max-w-md transform rounded-xl border border-border-dark bg-card-dark p-6 shadow-2xl transition-all scale-95 duration-300"
+            id="alert-modal-content">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span class="material-symbols-outlined text-amber-500">warning</span>
+                    System Alerts
+                </h3>
+                <button id="close-modal" class="text-muted-text hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="space-y-3" id="alert-list">
+                <!-- Alerts injected here -->
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button id="btn-resolve"
+                    class="px-4 py-2 bg-primary hover:bg-primary/90 text-white text-sm font-medium rounded-lg transition-colors">
+                    Acknowledge
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="dashboard.js"></script>
 </body>
 
 </html>

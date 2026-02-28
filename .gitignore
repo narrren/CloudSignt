@@ -21,3 +21,12 @@ Thumbs.db
 # Project config
 src/config.js
 create_icon.js
+
+# Archives
+*.zip
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
